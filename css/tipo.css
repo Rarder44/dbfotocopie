@@ -1,0 +1,115 @@
+
+		body{
+		background-image: url(../images/background.gif); 
+		background-repeat: repeat;
+		}
+	
+		
+		div.header{
+			/*text-align: center; */
+			vertical-align: 50%;
+			font-size: 20px;
+			color : blue;
+			height:160px;
+			background-color: #a52a2a;
+		}
+		div.topmenu{
+			/*width:700;*/
+			margin: auto;
+		}
+
+		div.footer{
+			text-align: center;
+			vertical-align: center;
+			font-size:15px;
+			background-color: #E3E3BD;
+			height:100px;
+			}
+			
+		div.container{
+			/*margin-left: 150px;
+			width: 900px;*/
+			height: 1000px;
+			background-color: #ffffff;
+			overflow: auto;
+			padding:20px;
+		}
+		
+		table{
+			/*border: solid 1px #000000;*/
+			width: 600px; 
+			/*margin:auto;*/
+		}
+		
+		td{
+			/*padding: 10px; */
+		}
+		
+		div.tabella{
+			margin: 5%;
+		}
+		
+		A.bottone{
+		DISPLAY: block;
+		text-align:center;
+		padding-left:4px; 
+		width:130px; 
+		margin-left:5px; 
+		line-height:25px; 
+		height:50px;
+		border-bottom:1px solid #fff; 
+		text-decoration:none; background-color:#111; 
+		color:#a52a2a; float:left;
+		}
+		A.bottone:hover {
+		TEXT-DECORATION: none; 
+		background-color:#7CA5C3; 
+		font-weight:bold; 
+		color:#fff;
+		}
+		A.bottoneLogin{
+		DISPLAY: block;
+		text-align:center;
+		padding-left:4px; 
+		width:130px; 
+		margin-left:5px; 
+		line-height:25px; 
+		height:50px;
+		border-bottom:1px solid #fff; 
+		text-decoration:none; 
+		background-color:#7CA5C3; 
+		color:#fff; 
+		float:left;
+		}
+		A.bottoneLogin:hover {
+		TEXT-DECORATION: none; 
+		background-color:#628198; 
+		font-weight:bold; 
+		color:#fff;
+		}
+		
+		A.bottoneSidebar{
+		DISPLAY: block;
+		text-align:center;
+		/*padding-left:4px; */
+		width:140px; 
+		/*margin-left:5px; */
+		line-height:25px; 
+		height:50px;
+		border-bottom:1px solid #fff; 
+		text-decoration:none; 
+		background-color:#C0C0C0; 
+		color:#000; 
+		float:left;
+		}
+		
+		div.sidebar{
+			width:140px;
+			
+		}
+		
+		div.box{
+			width:1050;
+			margin:auto;
+			/*background-color:#DAF2FA;*/
+		}
