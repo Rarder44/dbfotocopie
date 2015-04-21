@@ -29,7 +29,7 @@
 	
 	//Segreteria
 	$menuSide["Loggato"]["3"]="";	
-	$menuSide["Loggato"]["3"].="<a href='VisualizzaPrenotazioni.php' class='bottoneSidebar'>Visualizza Prenotazioni</a>";
+	$menuSide["Loggato"]["3"].="<a href='StoricoPrenotazioni.php' class='bottoneSidebar'>Visualizza Storico Prenotazioni</a>";
 	
 	
 	/*

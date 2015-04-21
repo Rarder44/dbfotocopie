@@ -23,6 +23,7 @@
 				<tr>
 					<td style="vertical-align: top;">
 						<div class="sidebar">
+						<?php include("_sidebar.php"); ?>
 						</div>
 					</td>
 					<td>
@@ -35,9 +36,11 @@
 							global $link;
 							//Esecuzione Query
 							
-							$q= "SELECT CONCAT(utenti.Nome,' ', utenti.Cognome) AS Professore, CONCAT (classi.`Numero classe`, ' ', classi.Sezione) AS Classe, prenotazioni.`Numero fotocopie`, prenotazioni.Formato, prenotazioni.Fogli, prenotazioni.`Data`";
-							$q.= " FROM utenti, classi, prenotazioni";
-							$q.= " WHERE utenti.ID = prenotazioni.ID_Utente AND classi.ID = prenotazioni.ID_Classe;";
+							$q= "SELECT CONCAT(utenti.Nome,' ', utenti.Cognome) AS Utente, CONCAT (classi.`Numero classe`, ' ', classi.Sezione, ' ', corsi.nome) 
+							AS Classe, prenotazioni.`Numero fotocopie`, prenotazioni.Formato, prenotazioni.Fogli, prenotazioni.`Data`, prenotazioni.DataRichiesta, 
+							prenotazioni.Eseguito";
+							$q.= " FROM utenti, classi, prenotazioni, corsi";
+							$q.=" WHERE utenti.ID = prenotazioni.ID_Utente AND classi.ID = prenotazioni.ID_Classe AND corsi.ID = classi.Corso";
 							$result =$link->query($q);
 							if($link->errno)
 								die('Invalid query: ' .$link->error); 				
