@@ -56,8 +56,20 @@
 								while($row=$result->fetch_assoc())
 								{
 									echo "<tr>";
-									foreach($row as $valore)
-										echo "<td>$valore</td>";										
+									
+										foreach($row as $valore)
+										{
+											if ($valore["Formato"]== 1)
+												echo "<td>A4</td>";
+											else if($valore["Formato"]==2)
+												echo "<td>A3</td>";
+											else
+											{
+												echo "<td>$valore</td>";
+											}
+											}
+										/*foreach($row as $valore)
+										echo "<td>$valore</td>";	*/									
 									echo "</tr>";
 								}
 							echo "</table>";
