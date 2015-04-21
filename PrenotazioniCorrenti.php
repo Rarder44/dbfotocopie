@@ -41,6 +41,7 @@
 							prenotazioni.Eseguito";
 							$q.= " FROM utenti, classi, prenotazioni, corsi";
 							$q.=" WHERE utenti.ID = prenotazioni.ID_Utente AND classi.ID = prenotazioni.ID_Classe AND corsi.ID = classi.Corso";
+							$q.=" AND prenotazioni.Eseguito='0'";
 							
 							$result =$link->query($q);
 							if($link->errno)
@@ -55,10 +56,37 @@
 								// Stampo a video i valori di ogni riga
 								while($row=$result->fetch_assoc())
 								{
+									$todays_date = date("d-m-Y");
+									$today = strtotime($todays_date);
+									$dataRitiro = strtotime($row["DataRichiesta"]); 
+									if ($dataRitiro > $today)
+									{
+										echo "<tr><font color=\"green\">";
+											foreach($row as $valore)
+												echo "<td>$valore</td>";
+										echo "</font></tr>";
+										
+									} 
+									else 
+									{ 
+										echo "<tr><font color=\"red\">";
+											foreach($row as $valore)
+												echo "<td>$valore</td>";
+										echo "</font></tr>";
+									}
+									/*
 									echo "<tr>";
-									foreach($row as $valore)
-										echo "<td>$valore</td>";										
+										if($row["Eseguito"])
+										{
+											echo "<input type=\checkbox\" name=\"eseguito\" value='1'";
+										}
+										else
+										{
+											foreach($row as $valore)
+												echo "<td>$valore</td>";
+										}
 									echo "</tr>";
+									*/
 								}
 							echo "</table>";
 						?>
