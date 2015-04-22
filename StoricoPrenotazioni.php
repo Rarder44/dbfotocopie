@@ -37,8 +37,9 @@
 							//Esecuzione Query
 							
 							$q= "SELECT CONCAT(utenti.Nome,' ', utenti.Cognome) AS Utente, CONCAT (classi.`Numero classe`, ' ', classi.Sezione, ' ', corsi.nome) 
-							AS Classe, prenotazioni.`Numero fotocopie`, prenotazioni.Formato, prenotazioni.Fogli, prenotazioni.`Data`, prenotazioni.DataRichiesta, 
-							prenotazioni.Eseguito";
+							AS Classe, prenotazioni.`Numero fotocopie`, (CASE WHEN prenotazioni.Formato = 1 THEN \"A4\" ELSE \"A3\" END) AS Formato, 
+							(CASE WHEN prenotazioni.Fogli = 1 THEN \"singoli\" ELSE \"fronte/retro\" END) AS Fogli, prenotazioni.`Data`, prenotazioni.DataRichiesta, 
+							(CASE WHEN prenotazioni.Eseguito = 0 THEN \"non eseguito\" ELSE \"eseguito\" END) AS Eseguito, prenotazioni.FileName";
 							$q.= " FROM utenti, classi, prenotazioni, corsi";
 							$q.=" WHERE utenti.ID = prenotazioni.ID_Utente AND classi.ID = prenotazioni.ID_Classe AND corsi.ID = classi.Corso";
 							
@@ -56,20 +57,8 @@
 								while($row=$result->fetch_assoc())
 								{
 									echo "<tr>";
-									
 										foreach($row as $valore)
-										{
-											if ($valore["Formato"]== 1)
-												echo "<td>A4</td>";
-											else if($valore["Formato"]==2)
-												echo "<td>A3</td>";
-											else
-											{
-												echo "<td>$valore</td>";
-											}
-											}
-										/*foreach($row as $valore)
-										echo "<td>$valore</td>";	*/									
+											echo "<td>$valore</td>";									
 									echo "</tr>";
 								}
 							echo "</table>";
