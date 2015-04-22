@@ -112,6 +112,135 @@
 	}
 	
 	
+	
+	else if(isset($_POST["LoadPrivilegiUtenti"]))
+	{
+		if(CheckSessionLogin())
+		{
+			if(isset($_SESSION["privilegio"])  && isset($_SESSION["user"])  )
+			{
+				$priv=$_SESSION["privilegio"];
+				$user=$_SESSION["user"];
+				
+				
+				//superadmin -> ottiene tutti gli utenti
+				if($priv==1)
+				{
+					$q="SELECT * from privilegi";
+					$arr=array();
+					
+					$r=$link->query($q);
+					if (!$r) {
+						$message  = 'Errore query: ' . $link->error . "<br>";
+						$message .= 'Whole query: ' . $q;
+						SendError($message );
+					}
+					else
+					{
+						while($row=$r->fetch_assoc())
+						{
+							$arr[]=$row;
+						}
+						SendDato($arr);
+					}
+				}
+				else
+					SendError("Autorizzazioni insufficenti");
+			}
+			else
+				SendError("Errore nel recupero del privilegio/user");
+		}
+		else
+			SendError("Autorizzazioni insufficenti");
+			
+	}
+	
+	
+	else if(isset($_POST["LoadCorsiClassi"]))
+	{
+		if(CheckSessionLogin())
+		{
+			if(isset($_SESSION["privilegio"])  && isset($_SESSION["user"])  )
+			{
+				$priv=$_SESSION["privilegio"];
+				$user=$_SESSION["user"];
+				
+				
+				//superadmin -> ottiene tutti gli utenti
+				if($priv==1)
+				{
+					$q="SELECT * from corsi";
+					$arr=array();
+					
+					$r=$link->query($q);
+					if (!$r) {
+						$message  = 'Errore query: ' . $link->error . "<br>";
+						$message .= 'Whole query: ' . $q;
+						SendError($message );
+					}
+					else
+					{
+						while($row=$r->fetch_assoc())
+						{
+							$arr[]=$row;
+						}
+						SendDato($arr);
+					}
+				}
+				else
+					SendError("Autorizzazioni insufficenti");
+			}
+			else
+				SendError("Errore nel recupero del privilegio/user");
+		}
+		else
+			SendError("Autorizzazioni insufficenti");
+			
+	}
+	
+	
+	else if(isset($_POST["LoadClassiAssociazioni"]))
+	{
+		if(CheckSessionLogin())
+		{
+			if(isset($_SESSION["privilegio"])  && isset($_SESSION["user"])  )
+			{
+				$priv=$_SESSION["privilegio"];
+				$user=$_SESSION["user"];
+				
+				
+				//superadmin -> ottiene tutti gli utenti
+				if($priv==1)
+				{
+					$q="SELECT classi.ID,CONCAT(`Numero classe`,Sezione,\" \",corsi.nome) as nome from classi INNER JOIN corsi on ( corsi.ID=Corso)";
+					$arr=array();
+					
+					$r=$link->query($q);
+					if (!$r) {
+						$message  = 'Errore query: ' . $link->error . "<br>";
+						$message .= 'Whole query: ' . $q;
+						SendError($message );
+					}
+					else
+					{
+						while($row=$r->fetch_assoc())
+						{
+							$arr[]=$row;
+						}
+						SendDato($arr);
+					}
+				}
+				else
+					SendError("Autorizzazioni insufficenti");
+			}
+			else
+				SendError("Errore nel recupero del privilegio/user");
+		}
+		else
+			SendError("Autorizzazioni insufficenti");
+			
+	}
+	/*
 	function objectToArray($d)
 	{
 		if (is_object($d)) 
@@ -148,5 +277,5 @@
 		$arr["dato"]=$dato;
 		$json = new Services_JSON();
 		echo $json->encode($arr);
-	}
+	}*/
 ?>

@@ -21,11 +21,182 @@ if(!CheckSessionLogin())
 <script type="text/javascript">
 	$(document).ready(function(){
 
-		$("#n_pagine, #n_alunni, #giorno, #mese, #anno").keypress( function(e) { return (e.charCode<48 || e.charCode>57)?false:true;});
+		$("#dati_classe_Nalunni, #dati_classe_fotocopie, #dati_classe_numero").keypress( function(e) { return (e.charCode<48 || e.charCode>57)?false:true;});
 		
+		LoadPrivilegiUtenti();
+		LoadCorsiClassi();
+		LoadClassiAssociazioni();
 		
+		//TEST
+		$("#ButtonAddUtente").click(function(){
+			
 		
+		});
+		
+		$("#ButtonUtentiShowDivHidden").click(function(){
+			$("#div_cerca_utenti_hidden").slideToggle(400);
+		});
+		
+	});
+	
+	function LoadPrivilegiUtenti()
+	{
+		$.post("include/db_worker.php",{LoadPrivilegiUtenti:1},function(data){
+			var arr=JSONfn.parse(data);
+			if(arr["err"]==1)
+			{
+				alert(arr["mess"]);
+			}
+			else
+			{
+				$.each(arr["dato"], function( index, value ) {
+					var v1=document.createElement('OPTION');
+					$(v1).append(value["Privilegio"]);
+					$(v1).val(value["ID"]);
+					$("#dati_utenti_Privilegio").append(v1);
+				});
+				
+			}
+		});
+	}
+	
+	function LoadCorsiClassi()
+	{
+		$.post("include/db_worker.php",{LoadCorsiClassi:1},function(data){
+			var arr=JSONfn.parse(data);
+			if(arr["err"]==1)
+			{
+				alert(arr["mess"]);
+			}
+			else
+			{
+				$.each(arr["dato"], function( index, value ) {
+					var v1=document.createElement('OPTION');
+					$(v1).append(value["nome"]);
+					$(v1).val(value["ID"]);
+					$("#dati_classe_corso").append(v1);
+				});
+				
+			}
+		});
+	}
+	
+	function LoadClassiAssociazioni()
+	{
+		$.post("include/db_worker.php",{LoadClassiAssociazioni:1},function(data){
+			var arr=JSONfn.parse(data);
+			if(arr["err"]==1)
+			{
+				alert(arr["mess"]);
+			}
+			else
+			{
+				$.each(arr["dato"], function( index, value ) {
+					var v1=document.createElement('OPTION');
+					$(v1).append(value["nome"]);
+					$(v1).val(value["ID"]);
+					$("#classi_associazioni").append(v1);
+				});
+				
+			}
+		});
+	}
+	
 
+	
+	function ResetFormNome()
+	{
+		$("#dati_utenti_nome,#dati_utenti_cognome,#dati_utenti_mail,#dati_utenti_user,#dati_utenti_Password").val("");
+		$("#dati_utenti_Privilegio").val(0);
+	}
+	
+	function ResetFormClassi()
+	{
+		$("#dati_classe_numero,#dati_classe_sezione,#dati_classe_Nalunni,#dati_classe_fotocopie").val("");
+		$("#dati_classe_corso").val(0);
+	}
+	
+	function ResetFormAssociazioni()
+	{
+		$("#classi_associazioni").val(0);
+	}
+	
+	
+	//Funzioni dell'utente
+	function LoadListaUtenti()
+	{
+		
+	}
+	function LoadListaUtentiCerca(Key)
+	{
+		
+	}
+	function LoadDatiUtente(ID)
+	{
+		
+	}
+	function AddUtente(Nome,Cognome,Mail,Username,Password,Privilegio)
+	{
+		
+	}
+	function RemoveUtente(ID)
+	{
+		
+	}
+	function EditUtente(ID,Nome,Cognome,Mail,Username,Password,Privilegio)
+	{
+		
+	}
+	
+	
+	
+	
+	//Funzioni Classi
+	function LoadListaClassi()
+	{
+		
+	}
+	function LoadListaClassiCerca(Key)
+	{
+		
+	}
+	function LoadDatiClasse(ID)
+	{
+		
+	}
+	function AddClasse(Numero,Sezione,Corso,Numero_Alunni,Fotocopie)
+	{
+		
+	}
+	function RemoveClasse(ID)
+	{
+		
+	}
+	function EditClasse(ID,Numero,Sezione,Corso,Numero_Alunni,Fotocopie)
+	{
+		
+	}
+	
+	
+	
+	//Funzioni Associazioni
+	function LoadListaUtentiAssociazioni()
+	{
+		
+	}
+	function LoadListaClassiAssociazioni(IDUtente)
+	{
+		
+	}
+	function AddAssociazione(IDUtente,IDClasse)
+	{
+		
+	}
+	function RemoveAssociazione(IDUtente,IDClasse)
+	{
+		
+	}
+	
 </script>
 
 <style>
@@ -33,9 +204,17 @@ if(!CheckSessionLogin())
 	border: 1px solid black;
 }
 #Lista_Utenti{
-height:300px;
+	height:300px;
+	overflow-y: scroll;
+	overflow-x: hidden;
+	width: 100%;
 }
-
+#Lista_Classi{
+	height:300px;
+	overflow-y: scroll;
+	overflow-x: hidden;
+	width: 100%;
+}
 #cont_relazioni_utenti{
 	height:300px;
 	width:200px;	
@@ -49,6 +228,26 @@ height:300px;
 	overflow-y: scroll;
   overflow-x: hidden;	
 	
+}
+
+#ContainerButtonUtentiShowDivHidden{
+	height: 9px;
+}
+#ButtonUtentiShowDivHidden{
+	float:right;
+	margin: 4px;
+}
+#div_cerca_utenti_hidden
+{
+	border: 1px solid black;
+	margin: 2px;padding: 4px;
+	width: 280px;
+	height: 80px;
+}
+#div_cerca_utenti_hidden table
+{
+	width:100%;
+	height:80px;
 }
 </style>
 	<body>
@@ -86,15 +285,63 @@ height:300px;
 													<h2>Utenti</h2>
 													<div class="cont_utenti">
 														<div id="Cerca_utenti">
-															<input type="text" id="Cerca_utenti_textbox" ></input>
-															<button>Cerca</button>
+															<div id="ContainerButtonUtentiShowDivHidden">
+															<!-- &#9650 su | &#9660 giu-->
+																<button id="ButtonUtentiShowDivHidden">Cerca &#9660</button>
+															</div><br>
+															<div id="div_cerca_utenti_hidden" style="display: none;">
+																<table >
+																	<tr>
+																		<td>
+																			Pattern:
+																		</td>
+																		<td>
+																			<input type="text" id="Cerca_utenti_textbox" ></input><br>
+																		</td>
+																	</tr>
+																	<tr>
+																		<td>
+																			Campo:
+																		</td>
+																		<td>
+																			<select id="cerca_utenti_combo_campo">
+																				<option value=0>Cognome</option>
+																				<option value=1>Nome</option>
+																			</select>
+																		</td>
+																		
+																	</tr>
+																	<tr>
+																		<td>
+																			
+																		</td>
+																		<td>
+																			<button id="ButtonCercaUtenti">Cerca</button>
+																		</td>
+																		
+																	</tr>
+																</table>
+																
+																
+																
+															</div>
 														</div>
 														<div id="Lista_Utenti" >
-															
+															<table style="width:100%;">
+																<tr>
+																	<td>
+																		Cognome
+																	</td>
+																	<td>
+																		Nome
+																	</td>
+																	
+																</tr>
+															</table>
 														</div>
 														<div id="Menu_Utenti" >
-															<button>+</button>
-															<button>-</button>
+															<button id="ButtonAddUtente">+</button>
+															<button id="ButtonRemoveUtente">-</button>
 														</div>
 													</div>
 													<br>
@@ -147,8 +394,8 @@ height:300px;
 																	Privilegio: 
 																</td>
 																<td>
-																	 <select>
-																	<option value="0">admin</option>
+																<select id="dati_utenti_Privilegio">
+																
 																</select>
 																</td>
 																
@@ -163,12 +410,12 @@ height:300px;
 															<input type="text" id="Cerca_utenti_textbox" ></input>
 															<button>Cerca</button>
 														</div>
-														<div id="Lista_Utenti" >
+														<div id="Lista_Classi" >
 															
 														</div>
 														<div id="Menu_Utenti" >
-															<button>+</button>
-															<button>-</button>
+															<button id="ButtonAddClasse">+</button>
+															<button id="ButtonRemoveClasse">-</button>
 														</div>
 													</div>
 													
@@ -181,7 +428,7 @@ height:300px;
 																	Numero: 
 																</td>
 																<td>
-																	<input id="dati_utenti_nome"></input>
+																	<input id="dati_classe_numero"></input>
 																</td>
 															</tr>
 															<tr>
@@ -189,7 +436,7 @@ height:300px;
 																	Sezione: 
 																</td>
 																<td>
-																	<input id="dati_utenti_cognome"></input>
+																	<input id="dati_classe_sezione"></input>
 																</td>
 															</tr>
 															
@@ -200,9 +447,9 @@ height:300px;
 																	Corso: 
 																</td>
 																<td>
-																	 <select>
-																	<option value="0">informatica</option>
-																</select>
+																	<select id="dati_classe_corso">
+																		
+																	</select>
 																</td>
 																
 															</tr>
@@ -211,7 +458,7 @@ height:300px;
 																	Numero Alunni: 
 																</td>
 																<td>
-																	<input id="dati_utenti_mail"></input>
+																	<input id="dati_classe_Nalunni"></input>
 																</td>
 															</tr>
 															<tr>
@@ -219,7 +466,7 @@ height:300px;
 																	Fotocopie: 
 																</td>
 																<td>
-																	<input id="dati_utenti_user"></input>
+																	<input id="dati_classe_fotocopie"></input>
 																</td>
 															</tr>
 														</table>													
@@ -262,14 +509,12 @@ height:300px;
 														<br>
 														
 														<div style="float:right;">
-															<select>
-																<option value="1">5b info</option>
-																
+															<select id="classi_associazioni">
 																
 															</select>
-															<button>+</button>
+															<button id="ButtonAddAssociazione">+</button>					
 														</div>
-														<button>-</button>
+														<button id="ButtonRemoveAssociazione">-</button>
 													</td>
 												</tr>
 											
