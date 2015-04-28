@@ -26,6 +26,9 @@ if(!CheckSessionLogin())
 		LoadPrivilegiUtenti();
 		LoadCorsiClassi();
 		LoadClassiAssociazioni();
+		LoadListaUtenti();
+		
+
 		
 		//TEST
 		$("#ButtonAddUtente").click(function(){
@@ -37,6 +40,46 @@ if(!CheckSessionLogin())
 			$("#div_cerca_utenti_hidden").slideToggle(400);
 		});
 		
+		
+		$("#ButtonClassiShowDivHidden").click(function(){
+			$("#div_cerca_Classi_hidden").slideToggle(400);
+		});
+		$("#ButtonCanceldit").click(function(){
+			CancelEditUtente();
+		});
+		
+		$("#ButtonSaveEdit").click(function(){	
+			if($("#dati_utenti_Password").attr("cambia-pass")=="si")
+				EditUtente($(".cont_dati_utenti").attr("id-ut"),$("#dati_utenti_nome").val(),$("#dati_utenti_cognome").val(),$("#dati_utenti_mail").val(),$("#dati_utenti_user").val(),$("#dati_utenti_Privilegio").val(),$("#dati_utenti_Password").val());
+			else
+				EditUtente($(".cont_dati_utenti").attr("id-ut"),$("#dati_utenti_nome").val(),$("#dati_utenti_cognome").val(),$("#dati_utenti_mail").val(),$("#dati_utenti_user").val(),$("#dati_utenti_Privilegio").val());
+		});
+		$("#ButtonRemoveUtente").click(function(){			
+			RemoveUtente($(".cont_dati_utenti").attr("id-ut"));
+		});
+		$("#ButtonAddUtente").click(function(){			
+			AddUtente($("#dati_utenti_nome").val(),$("#dati_utenti_cognome").val(),$("#dati_utenti_mail").val(),$("#dati_utenti_user").val(),$("#dati_utenti_Password").val(),$("#dati_utenti_Privilegio").val());
+		});
+		$("#ButtonCercaUtenti").click(function(){			
+			CancelEditUtente();
+			LoadListaUtentiCerca($("#cerca_utenti_combo_campo").val(),$("#Cerca_utenti_textbox").val());
+		});
+		
+		
+		$("#ConfirmPassChange").click(function(){			
+			if($("#dati_utenti_Password").attr("cambia-pass")=="si")
+			{
+				$("#dati_utenti_Password").removeAttr("cambia-pass");
+				$("#dati_utenti_Password").removeClass("verde");
+				$("#ConfirmPassChange").text("✓");
+			}
+			else
+			{
+				$("#dati_utenti_Password").attr("cambia-pass","si");
+				$("#dati_utenti_Password").addClass("verde");
+				$("#ConfirmPassChange").text("✗");
+			}
+		});
 	});
 	
 	function LoadPrivilegiUtenti()
@@ -75,6 +118,9 @@ if(!CheckSessionLogin())
 					$(v1).append(value["nome"]);
 					$(v1).val(value["ID"]);
 					$("#dati_classe_corso").append(v1);
+					
+					
+					$("#cerca_Classi_combo_corso").append($(v1).clone());
 				});
 				
 			}
@@ -125,27 +171,188 @@ if(!CheckSessionLogin())
 	//Funzioni dell'utente
 	function LoadListaUtenti()
 	{
-		
+		$.post("include/db_worker.php",{LoadListaUtenti:1},function(data){
+			var arr=JSONfn.parse(data);
+			if(arr["err"]==1)
+			{
+				alert(arr["mess"]);
+			}
+			else
+			{
+				$("#Lista_Utenti table").html("");
+				$.each(arr["dato"], function( index, value ) {
+					var v1=document.createElement('tr');
+					$(v1).attr("id-ut",value["ID"]);
+					var v2=document.createElement('td');
+					$(v2).append(value["Cognome"]);
+					var v3=document.createElement('td');
+					$(v3).append(value["Nome"]);
+					$(v1).append(v2);
+					$(v1).append(v3);
+					$(v1).click(function()
+					{
+						UnselectAllUtenti();
+						$(this).addClass("selected");
+						LoadDatiUtente($(this).attr("id-ut"));
+					});
+					
+					$("#Lista_Utenti table").append(v1);
+				});
+				
+			}
+		});
 	}
-	function LoadListaUtentiCerca(Key)
+	function LoadListaUtentiCerca(campo,pattern)
 	{
-		
+		$.post("include/db_worker.php",{LoadListaUtentiCerca:1,campo:campo,pattern:pattern},function(data){
+			var arr=JSONfn.parse(data);
+			if(arr["err"]==1)
+			{
+				alert(arr["mess"]);
+			}
+			else
+			{
+				$("#Lista_Utenti table").html("");
+				$.each(arr["dato"], function( index, value ) {
+					var v1=document.createElement('tr');
+					$(v1).attr("id-ut",value["ID"]);
+					var v2=document.createElement('td');
+					$(v2).append(value["Cognome"]);
+					var v3=document.createElement('td');
+					$(v3).append(value["Nome"]);
+					$(v1).append(v2);
+					$(v1).append(v3);
+					$(v1).click(function()
+					{
+						UnselectAllUtenti();
+						$(this).addClass("selected");
+						LoadDatiUtente($(this).attr("id-ut"));
+					});
+					
+					$("#Lista_Utenti table").append(v1);
+				});
+				
+			}
+		});
 	}
 	function LoadDatiUtente(ID)
 	{
-		
+		$.post("include/db_worker.php",{LoadDatiUtente:1,ID:ID},function(data){
+			var arr=JSONfn.parse(data);
+			if(arr["err"]==1)
+			{
+				alert(arr["mess"]);
+			}
+			else
+			{
+				
+				$("#ButtonCanceldit").removeAttr("disabled");
+				$("#ButtonSaveEdit").removeAttr("disabled");
+				$("#ButtonRemoveUtente").removeAttr("disabled");
+				$("#ConfirmPassChange").removeAttr('disabled');
+				
+				
+				$("#dati_utenti_nome").val(arr["dato"][0]["Nome"]);
+				$("#dati_utenti_cognome").val(arr["dato"][0]["Cognome"]);
+				$("#dati_utenti_mail").val(arr["dato"][0]["E-mail"]);
+				$("#dati_utenti_user").val(arr["dato"][0]["Username"]);
+				$("#dati_utenti_Privilegio").val(arr["dato"][0]["Privilegio"]);
+				$(".cont_dati_utenti").attr("id-ut",arr["dato"][0]["ID"]);
+				$("#dati_utenti_Password").val("");
+			}
+		});
 	}
 	function AddUtente(Nome,Cognome,Mail,Username,Password,Privilegio)
 	{
-		
+		$.post("include/db_worker.php",{AddUtente:1,Nome:Nome,Cognome:Cognome,Mail:Mail,Username:Username,Password:Password,Privilegio:Privilegio},function(data){
+			var arr=JSONfn.parse(data);
+			if(arr["err"]==1)
+			{
+				alert(arr["mess"]);
+			}
+			else
+			{
+				CancelEditUtente();
+				LoadListaUtentiCerca($("#cerca_utenti_combo_campo").val(),$("#Cerca_utenti_textbox").val());
+			}
+		});
 	}
 	function RemoveUtente(ID)
 	{
-		
+		$.post("include/db_worker.php",{RemoveUtente:1,ID:ID},function(data){
+			var arr=JSONfn.parse(data);
+			if(arr["err"]==1)
+			{
+				alert(arr["mess"]);
+			}
+			else
+			{
+				CancelEditUtente();
+				LoadListaUtentiCerca($("#cerca_utenti_combo_campo").val(),$("#Cerca_utenti_textbox").val());
+			}
+		});
 	}
-	function EditUtente(ID,Nome,Cognome,Mail,Username,Password,Privilegio)
+	function EditUtente(ID,Nome,Cognome,Mail,Username,Privilegio,Password)
 	{
+		//Senza cambio pass
+		if (typeof Password == 'undefined')
+		{
+				$.post("include/db_worker.php",{EditUtente:1,ID:ID,Nome:Nome,Cognome:Cognome,Mail:Mail,Username:Username,Privilegio:Privilegio},function(data){
+				var arr=JSONfn.parse(data);
+				if(arr["err"]==1)
+				{
+					alert(arr["mess"]);
+				}
+				else
+				{
+					CancelEditUtente();
+					LoadListaUtentiCerca($("#cerca_utenti_combo_campo").val(),$("#Cerca_utenti_textbox").val());
+				}
+			});
+		}
+		//Con cambio pass
+		else
+		{	
+			$.post("include/db_worker.php",{EditUtente:1,ID:ID,Nome:Nome,Cognome:Cognome,Mail:Mail,Username:Username,Password:Password,Privilegio:Privilegio},function(data){
+				var arr=JSONfn.parse(data);
+				if(arr["err"]==1)
+				{
+					alert(arr["mess"]);
+				}
+				else
+				{
+					CancelEditUtente();
+					LoadListaUtentiCerca($("#cerca_utenti_combo_campo").val(),$("#Cerca_utenti_textbox").val());
+				}
+			});
+		}
+	}
+	function CancelEditUtente()
+	{
+		$("#ButtonCanceldit").attr('disabled','disabled');
+		$("#ButtonSaveEdit").attr('disabled','disabled');
+		$("#ButtonRemoveUtente").attr('disabled','disabled');
+		$("#ConfirmPassChange").attr('disabled','disabled');
 		
+		
+		$("#dati_utenti_nome").val("");
+		$("#dati_utenti_cognome").val("");
+		$("#dati_utenti_mail").val("");
+		$("#dati_utenti_user").val("");
+		$("#dati_utenti_Password").val("");
+		$("#dati_utenti_Privilegio").val(1);
+		$(".cont_dati_utenti").removeAttr("id-ut");
+		
+		$("#dati_utenti_Password").removeAttr("cambia-pass");
+		$("#dati_utenti_Password").removeClass("verde");
+		$("#ConfirmPassChange").text("✓");
+				
+				
+		UnselectAllUtenti();
+	}
+	function UnselectAllUtenti()
+	{
+		$("#Lista_Utenti table .selected").removeClass("selected");
 	}
 	
 	
@@ -230,25 +437,48 @@ if(!CheckSessionLogin())
 	
 }
 
-#ContainerButtonUtentiShowDivHidden{
+#ContainerButtonUtentiShowDivHidden,#ContainerButtonClassiShowDivHidden{
 	height: 9px;
 }
-#ButtonUtentiShowDivHidden{
+#ButtonUtentiShowDivHidden,#ButtonClassiShowDivHidden{
 	float:right;
 	margin: 4px;
 }
-#div_cerca_utenti_hidden
+
+#div_cerca_utenti_hidden,#div_cerca_Classi_hidden
 {
 	border: 1px solid black;
 	margin: 2px;padding: 4px;
 	width: 280px;
 	height: 80px;
 }
-#div_cerca_utenti_hidden table
+#div_cerca_utenti_hidden table,#div_cerca_Classi_hidden table
 {
 	width:100%;
 	height:80px;
 }
+
+
+#Lista_Utenti table tr
+{
+	cursor:pointer;
+}
+#Lista_Utenti table tr.selected
+{
+	  background: rgb(255, 178, 178);
+}
+
+
+#Lista_Utenti table tr:hover
+{
+	    background: rgb(255, 218, 218);
+}
+
+
+#dati_utenti_Password.verde
+{
+	  background: rgb(148, 253, 148);
+}	
 </style>
 	<body>
 		<div class="box">
@@ -305,8 +535,8 @@ if(!CheckSessionLogin())
 																		</td>
 																		<td>
 																			<select id="cerca_utenti_combo_campo">
-																				<option value=0>Cognome</option>
-																				<option value=1>Nome</option>
+																				<option value="Cognome">Cognome</option>
+																				<option value="Nome">Nome</option>
 																			</select>
 																		</td>
 																		
@@ -328,20 +558,16 @@ if(!CheckSessionLogin())
 														</div>
 														<div id="Lista_Utenti" >
 															<table style="width:100%;">
-																<tr>
-																	<td>
-																		Cognome
-																	</td>
-																	<td>
-																		Nome
-																	</td>
-																	
-																</tr>
+																
 															</table>
 														</div>
 														<div id="Menu_Utenti" >
 															<button id="ButtonAddUtente">+</button>
 															<button id="ButtonRemoveUtente">-</button>
+															
+															<button id="ButtonCanceldit" disabled="disabled" style="float:right;">Annulla</button>
+															<button id="ButtonSaveEdit" disabled="disabled" style="float:right;">Salva</button>
+															
 														</div>
 													</div>
 													<br>
@@ -386,6 +612,7 @@ if(!CheckSessionLogin())
 																</td>
 																<td>
 																	<input id="dati_utenti_Password"></input>
+																	<button id="ConfirmPassChange" disabled="disabled">&#10003;</button>
 																</td>
 																
 															</tr>
@@ -407,8 +634,38 @@ if(!CheckSessionLogin())
 													<h2>Classi</h2>
 													<div class="cont_classi">
 														<div id="Cerca_utenti">
-															<input type="text" id="Cerca_utenti_textbox" ></input>
-															<button>Cerca</button>
+															
+															
+															
+															<div id="ContainerButtonUtentiShowDivHidden">
+															<!-- &#9650 su | &#9660 giu-->
+																<button id="ButtonClassiShowDivHidden">Cerca &#9660</button>
+															</div><br>
+															<div id="div_cerca_Classi_hidden" style="display: none;">
+																<table >
+																	<tr>
+																		<td>
+																			Corso:
+																		</td>
+																		<td>
+																			<select id="cerca_Classi_combo_corso">
+																				
+																			</select>
+																		</td>
+																	</tr>
+																	<tr>
+																		<td>
+																			
+																		</td>
+																		<td>
+																			<button id="ButtonCercaUtenti">Cerca</button>
+																		</td>
+																		
+																	</tr>
+																</table>
+															</div>
+															
+															
 														</div>
 														<div id="Lista_Classi" >
 															

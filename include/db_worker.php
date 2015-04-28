@@ -240,6 +240,286 @@
 			SendError("Autorizzazioni insufficenti");
 			
 	}
+	
+	
+	else if(isset($_POST["LoadListaUtenti"]))
+	{
+		if(CheckSessionLogin())
+		{
+			if(isset($_SESSION["privilegio"])  && isset($_SESSION["user"])  )
+			{
+				$priv=$_SESSION["privilegio"];
+				$user=$_SESSION["user"];
+				
+				
+				//superadmin -> ottiene tutti gli utenti
+				if($priv==1)
+				{
+					$q="SELECT ID,Nome,Cognome FROM utenti";
+					$arr=array();
+					
+					$r=$link->query($q);
+					if (!$r) {
+						$message  = 'Errore query: ' . $link->error . "<br>";
+						$message .= 'Whole query: ' . $q;
+						SendError($message );
+					}
+					else
+					{
+						while($row=$r->fetch_assoc())
+						{
+							$arr[]=$row;
+						}
+						SendDato($arr);
+					}
+				}
+				else
+					SendError("Autorizzazioni insufficenti");
+			}
+			else
+				SendError("Errore nel recupero del privilegio/user");
+		}
+		else
+			SendError("Autorizzazioni insufficenti");
+			
+	}
+	
+	else if(isset($_POST["LoadListaUtentiCerca"])  && isset($_POST["campo"])  && isset($_POST["pattern"]))
+	{
+		if(CheckSessionLogin())
+		{
+			if(isset($_SESSION["privilegio"])  && isset($_SESSION["user"])  )
+			{
+				$priv=$_SESSION["privilegio"];
+				$user=$_SESSION["user"];
+				
+				
+				//superadmin -> ottiene tutti gli utenti
+				if($priv==1)
+				{
+					$q="SELECT ID,Nome,Cognome FROM utenti where ".$_POST["campo"]." LIKE '%".$_POST["pattern"]."%'";
+					$arr=array();
+					
+					$r=$link->query($q);
+					if (!$r) {
+						$message  = 'Errore query: ' . $link->error . "<br>";
+						$message .= 'Whole query: ' . $q;
+						SendError($message );
+					}
+					else
+					{
+						while($row=$r->fetch_assoc())
+						{
+							$arr[]=$row;
+						}
+						SendDato($arr);
+					}
+				}
+				else
+					SendError("Autorizzazioni insufficenti");
+			}
+			else
+				SendError("Errore nel recupero del privilegio/user");
+		}
+		else
+			SendError("Autorizzazioni insufficenti");
+			
+	}
+	
+	
+	
+	else if(isset($_POST["LoadDatiUtente"]) && isset($_POST["ID"]))
+	{
+		if(CheckSessionLogin())
+		{
+			if(isset($_SESSION["privilegio"])  && isset($_SESSION["user"])  )
+			{
+				$priv=$_SESSION["privilegio"];
+				$user=$_SESSION["user"];
+				
+				
+				//superadmin -> ottiene tutti gli utenti
+				if($priv==1)
+				{
+					$q="SELECT ID,Nome,Cognome,Username,`E-mail`,Privilegio from utenti WHERE ID=".$_POST["ID"];
+					$arr=array();
+					
+					$r=$link->query($q);
+					if (!$r) {
+						$message  = 'Errore query: ' . $link->error . "<br>";
+						$message .= 'Whole query: ' . $q;
+						SendError($message );
+					}
+					else
+					{
+						while($row=$r->fetch_assoc())
+						{
+							$arr[]=$row;
+						}
+						SendDato($arr);
+					}
+				}
+				else
+					SendError("Autorizzazioni insufficenti");
+			}
+			else
+				SendError("Errore nel recupero del privilegio/user");
+		}
+		else
+			SendError("Autorizzazioni insufficenti");
+			
+	}
+	
+	else if(isset($_POST["RemoveUtente"]) && isset($_POST["ID"]))
+	{
+		if(CheckSessionLogin())
+		{
+			if(isset($_SESSION["privilegio"])  && isset($_SESSION["user"])  )
+			{
+				$priv=$_SESSION["privilegio"];
+				$user=$_SESSION["user"];
+				
+				
+				//superadmin -> ottiene tutti gli utenti
+				if($priv==1)
+				{
+					$q="delete from utenti where ID=$_POST[ID];";
+					$arr=array();
+					
+					$r=$link->query($q);
+					if (!$r) {
+						$message  = 'Errore query: ' . $link->error . "<br>";
+						$message .= 'Whole query: ' . $q;
+						SendError($message );
+					}
+					else
+					{
+						SendDato(null,"Utente eliminato correttamente");
+					}
+				}
+				else
+					SendError("Autorizzazioni insufficenti");
+			}
+			else
+				SendError("Errore nel recupero del privilegio/user");
+		}
+		else
+			SendError("Autorizzazioni insufficenti");
+			
+	}
+	
+	else if(isset($_POST["AddUtente"]) && isset($_POST["Nome"])&& isset($_POST["Cognome"])&& isset($_POST["Mail"])&& isset($_POST["Username"])&& isset($_POST["Password"])&& isset($_POST["Privilegio"]))
+	{
+		if(CheckSessionLogin())
+		{
+			if(isset($_SESSION["privilegio"])  && isset($_SESSION["user"])  )
+			{
+				$priv=$_SESSION["privilegio"];
+				$user=$_SESSION["user"];
+				
+				
+				//superadmin -> ottiene tutti gli utenti
+				if($priv==1)
+				{
+					$q="SELECT count(ID) as c from utenti WHERE Username='".$_POST["Username"]."'";
+					
+					
+					$r=$link->query($q);
+					if (!$r) {
+						$message  = 'Errore query: ' . $link->error . "<br>";
+						$message .= 'Whole query: ' . $q;
+						SendError($message );
+					}
+					else
+					{
+						
+						if($row=$r->fetch_assoc())
+						{
+							if($row["c"]>0)
+								SendError("Username già presente nel database");
+							
+							else
+							{
+								$q="insert INTO utenti(Nome,Cognome,`E-mail`,Username,`Password`,Privilegio) values('$_POST[Nome]','$_POST[Cognome]','$_POST[Mail]','$_POST[Username]',md5('$_POST[Password]'),$_POST[Privilegio])";
+								$arr=array();
+								
+								$r=$link->query($q);
+								if (!$r) {
+									$message  = 'Errore query: ' . $link->error . "<br>";
+									$message .= 'Whole query: ' . $q;
+									SendError($message );
+								}
+								else
+								{
+									SendDato(null,"Utente eliminato correttamente");
+								}
+							}
+						}
+						else
+							SendError("Errore nel recupero degli Utenti");
+
+					}
+
+				}
+				else
+					SendError("Autorizzazioni insufficenti");
+			}
+			else
+				SendError("Errore nel recupero del privilegio/user");
+		}
+		else
+			SendError("Autorizzazioni insufficenti");
+			
+	}
+	
+	else if(isset($_POST["EditUtente"]) && isset($_POST["ID"])&& isset($_POST["Nome"])&& isset($_POST["Cognome"])&& isset($_POST["Mail"])&& isset($_POST["Username"])&& isset($_POST["Privilegio"]))
+	{
+		if(CheckSessionLogin())
+		{
+			if(isset($_SESSION["privilegio"])  && isset($_SESSION["user"])  )
+			{
+				$priv=$_SESSION["privilegio"];
+				$user=$_SESSION["user"];
+				
+				
+				//superadmin -> ottiene tutti gli utenti
+				if($priv==1)
+				{
+					$q="";
+					if( isset($_POST["Password"]))
+					{
+						$q="update utenti set Nome='$_POST[Nome]', Cognome='$_POST[Cognome]',`E-mail`='$_POST[Mail]',Username='$_POST[Username]',`Password`=md5('$_POST[Password]'),Privilegio=$_POST[Privilegio] where ID=$_POST[ID]";
+					}
+					else
+					{
+						$q="update utenti set Nome='$_POST[Nome]', Cognome='$_POST[Cognome]',`E-mail`='$_POST[Mail]',Username='$_POST[Username]',Privilegio=$_POST[Privilegio] where ID=$_POST[ID]";
+					}
+					
+					$arr=array();
+					
+					$r=$link->query($q);
+					if (!$r) {
+						$message  = 'Errore query: ' . $link->error . "<br>";
+						$message .= 'Whole query: ' . $q;
+						SendError($message );
+					}
+					else
+					{
+						SendDato(null,"Utente eliminato correttamente");
+					}
+						
+
+				}
+				else
+					SendError("Autorizzazioni insufficenti");
+			}
+			else
+				SendError("Errore nel recupero del privilegio/user");
+		}
+		else
+			SendError("Autorizzazioni insufficenti");
+			
+	}
 	/*
 	function objectToArray($d)
 	{
