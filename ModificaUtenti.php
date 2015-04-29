@@ -27,7 +27,7 @@ if(!CheckSessionLogin())
 		LoadCorsiClassi();
 		LoadClassiAssociazioni();
 		LoadListaUtenti();
-		
+		LoadListaClassi();
 
 		
 		//TEST
@@ -357,11 +357,39 @@ if(!CheckSessionLogin())
 	
 	
 	
+	//<button id="ButtonCancelEditClasse" disabled="disabled" style="float:right;">Annulla</button>
+	//<button id="ButtonSaveEditClasse" disabled="disabled" style="float:right;">Salva</button>
 	
 	//Funzioni Classi
 	function LoadListaClassi()
 	{
-		
+		$.post("include/db_worker.php",{LoadListaClassi:1},function(data){
+			var arr=JSONfn.parse(data);
+			if(arr["err"]==1)
+			{
+				alert(arr["mess"]);
+			}
+			else
+			{
+				$("#Lista_Classi table").html("");
+				$.each(arr["dato"], function( index, value ) {
+					var v1=document.createElement('tr');
+					$(v1).attr("id-cl",value["ID"]);
+					var v2=document.createElement('td');
+					$(v2).append(value["Nome"]);
+					$(v1).append(v2);
+					$(v1).click(function()
+					{
+						UnselectAllClassi();
+						$(this).addClass("selected");
+						LoadDatiClasse($(this).attr("id-cl"));
+					});
+					
+					$("#Lista_Classi table").append(v1);
+				});
+				
+			}
+		});
 	}
 	function LoadListaClassiCerca(Key)
 	{
@@ -369,7 +397,30 @@ if(!CheckSessionLogin())
 	}
 	function LoadDatiClasse(ID)
 	{
+		$.post("include/db_worker.php",{LoadDatiClasse:1,ID:ID},function(data){
+			var arr=JSONfn.parse(data);
+			if(arr["err"]==1)
+			{
+				alert(arr["mess"]);
+			}
+			else
+			{
+				
+				$("#ButtonCancelEditClasse").removeAttr("disabled");
+				$("#ButtonSaveEditClasse").removeAttr("disabled");
+				$("#ButtonRemoveClasse").removeAttr("disabled");
 		
+				
+				
+				$("#dati_classe_numero").val(arr["dato"][0]["Numero classe"]);
+				$("#dati_classe_sezione").val(arr["dato"][0]["Sezione"]);
+				$("#dati_classe_corso").val(arr["dato"][0]["Corso"]);
+				$("#dati_classe_Nalunni").val(arr["dato"][0]["Numero alunni"]);
+				$("#dati_classe_fotocopie").val(arr["dato"][0]["Fotocopie rimanenti"]);
+				$(".cont_dati_classi").attr("id-ut",arr["dato"][0]["ID"]);
+
+			}
+		});
 	}
 	function AddClasse(Numero,Sezione,Corso,Numero_Alunni,Fotocopie)
 	{
@@ -382,6 +433,10 @@ if(!CheckSessionLogin())
 	function EditClasse(ID,Numero,Sezione,Corso,Numero_Alunni,Fotocopie)
 	{
 		
+	}
+	function UnselectAllClassi()
+	{
+		$("#Lista_Classi table .selected").removeClass("selected");
 	}
 	
 	
@@ -459,17 +514,17 @@ if(!CheckSessionLogin())
 }
 
 
-#Lista_Utenti table tr
+#Lista_Utenti table tr,#Lista_Classi table tr
 {
 	cursor:pointer;
 }
-#Lista_Utenti table tr.selected
+#Lista_Utenti table tr.selected,#Lista_Classi table tr.selected
 {
 	  background: rgb(255, 178, 178);
 }
 
 
-#Lista_Utenti table tr:hover
+#Lista_Utenti table tr:hover,#Lista_Classi table tr:hover
 {
 	    background: rgb(255, 218, 218);
 }
@@ -563,7 +618,7 @@ if(!CheckSessionLogin())
 														</div>
 														<div id="Menu_Utenti" >
 															<button id="ButtonAddUtente">+</button>
-															<button id="ButtonRemoveUtente">-</button>
+															<button id="ButtonRemoveUtente" disabled="disabled">-</button>
 															
 															<button id="ButtonCanceldit" disabled="disabled" style="float:right;">Annulla</button>
 															<button id="ButtonSaveEdit" disabled="disabled" style="float:right;">Salva</button>
@@ -668,11 +723,15 @@ if(!CheckSessionLogin())
 															
 														</div>
 														<div id="Lista_Classi" >
-															
+															<table style="width:100%;">
+																
+															</table>
 														</div>
 														<div id="Menu_Utenti" >
 															<button id="ButtonAddClasse">+</button>
-															<button id="ButtonRemoveClasse">-</button>
+															<button id="ButtonRemoveClasse" disabled="disabled">-</button>
+															<button id="ButtonCancelEditClasse" disabled="disabled" style="float:right;">Annulla</button>
+															<button id="ButtonSaveEditClasse" disabled="disabled" style="float:right;">Salva</button>
 														</div>
 													</div>
 													
@@ -771,7 +830,7 @@ if(!CheckSessionLogin())
 															</select>
 															<button id="ButtonAddAssociazione">+</button>					
 														</div>
-														<button id="ButtonRemoveAssociazione">-</button>
+														<button id="ButtonRemoveAssociazione" disabled="disabled">-</button>
 													</td>
 												</tr>
 											

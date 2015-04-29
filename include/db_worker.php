@@ -520,42 +520,103 @@
 			SendError("Autorizzazioni insufficenti");
 			
 	}
-	/*
-	function objectToArray($d)
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	else if(isset($_POST["LoadListaClassi"]))
 	{
-		if (is_object($d)) 
+		if(CheckSessionLogin())
 		{
-			$d = get_object_vars($d);
+			if(isset($_SESSION["privilegio"])  && isset($_SESSION["user"])  )
+			{
+				$priv=$_SESSION["privilegio"];
+				$user=$_SESSION["user"];
+				
+				
+				//superadmin -> ottiene tutti gli utenti
+				if($priv==1)
+				{
+					$q="SELECT classi.ID,CONCAT(`Numero classe`,Sezione,\" \",corsi.nome) as Nome from classi INNER JOIN corsi on ( corsi.ID=Corso)";
+					$arr=array();
+					
+					$r=$link->query($q);
+					if (!$r) {
+						$message  = 'Errore query: ' . $link->error . "<br>";
+						$message .= 'Whole query: ' . $q;
+						SendError($message );
+					}
+					else
+					{
+						while($row=$r->fetch_assoc())
+						{
+							$arr[]=$row;
+						}
+						SendDato($arr);
+					}
+				}
+				else
+					SendError("Autorizzazioni insufficenti");
+			}
+			else
+				SendError("Errore nel recupero del privilegio/user");
 		}
-		if (is_array($d)) 
-		{
-			return array_map(__FUNCTION__, $d);
-		}
-		else 
-		{
-			return $d;
-		}
+		else
+			SendError("Autorizzazioni insufficenti");
+			
 	}
 	
 	
-	function SendError($mess)
+	
+	else if(isset($_POST["LoadDatiClasse"]) && isset($_POST["ID"]))
 	{
-		$arr=array();
-		
-		$arr["err"]=1;
-		$arr["mess"]=$mess;
-		$arr["dato"]="";
-		$json = new Services_JSON();
-		echo $json->encode($arr);
+		if(CheckSessionLogin())
+		{
+			if(isset($_SESSION["privilegio"])  && isset($_SESSION["user"])  )
+			{
+				$priv=$_SESSION["privilegio"];
+				$user=$_SESSION["user"];
+				
+				
+				//superadmin -> ottiene tutti gli utenti
+				if($priv==1)
+				{
+					$q="SELECT ID,`Numero classe`,`Sezione`,`Corso`,`Numero alunni`,`Fotocopie rimanenti` FROM `classi` WHERE ID=".$_POST["ID"];
+					$arr=array();
+					
+					$r=$link->query($q);
+					if (!$r) {
+						$message  = 'Errore query: ' . $link->error . "<br>";
+						$message .= 'Whole query: ' . $q;
+						SendError($message );
+					}
+					else
+					{
+						while($row=$r->fetch_assoc())
+						{
+							$arr[]=$row;
+						}
+						SendDato($arr);
+					}
+				}
+				else
+					SendError("Autorizzazioni insufficenti");
+			}
+			else
+				SendError("Errore nel recupero del privilegio/user");
+		}
+		else
+			SendError("Autorizzazioni insufficenti");
+			
 	}
-	function SendDato($dato,$mess="")
-	{
-		$arr=array();
-		
-		$arr["err"]=0;
-		$arr["mess"]=$mess;
-		$arr["dato"]=$dato;
-		$json = new Services_JSON();
-		echo $json->encode($arr);
-	}*/
 ?>
