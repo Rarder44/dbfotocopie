@@ -30,7 +30,7 @@
 						<div class="container">
 				
 						<!--inserire qui il codice-->
-						<strong>Prenotazioni effettuate</strong>
+						<strong>Storico Prenotazioni</strong>
 						<br><br>
 						<?php 
 							global $link;
@@ -57,8 +57,15 @@
 								while($row=$result->fetch_assoc())
 								{
 									echo "<tr>";
-										foreach($row as $valore)
-											echo "<td>$valore</td>";									
+										foreach($row as $k=>$valore)
+										{
+											if ($k == "FileName" && $valore!=null)
+												echo "<td> <a href = 'file/$valore'>link</a> </td>";
+											else if ($k == "FileName" && $valore == null)
+												echo "<td>file non presente</td>";
+											else
+												echo "<td>$valore</td>";
+										}
 									echo "</tr>";
 								}
 							echo "</table>";

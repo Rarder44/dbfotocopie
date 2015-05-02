@@ -1,6 +1,31 @@
 <?php 
 include_once("conn.php");
-
+/*
+function ConfermaEsecuzione(&$ID)
+{
+?>
+<script>
+	conferma = confirm('Sei sicuro di voler procedere con l\'esecuzione della stampa?');
+	
+	if (conferma == true)
+	{
+	<?php
+		global $link;
+		$update ="update prenotazioni set `DataEsecuzione`= `NOW()";
+		$update .= " where ID = $ID";
+						
+			if (!$link->query($update))
+			{
+				$message = 'Errore query: ' .$link->errno ." - ". $link->error. "\r\n";
+				$message .= 'Whole query: ' .$q;
+				echo $message;
+			}
+	?>
+	}
+</script>
+<?php
+}
+*/
 function login($user,$md5pass)
 {
 	//query che controlla la login

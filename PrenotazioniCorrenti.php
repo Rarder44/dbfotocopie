@@ -1,6 +1,35 @@
+<?php
+if(!isset($_SESSION))
+	session_start();
+
+include("include/func.php");
+include ("include/conn.php");
+
+if(!CheckSessionLogin())
+{
+	echo "<html></head><script language='javascript'>top.location.href = 'login.php';</script></head><html>";
+}
+?>
 <html>
 	<head>
 		<?php include("_head.php"); ?>	
+	
+	<script>
+	
+	function ConfermaEsecuzione()
+	{
+	
+		conferma = confirm('Sicuro di voler procedere?');
+		
+		if (conferma == true)
+		{
+
+			alert("Esecuzione Avvenuta!!");
+			
+		}
+	}
+	
+	</script>
 	</head>
 	<body>
 		<div class="box">
@@ -36,12 +65,14 @@
 							global $link;
 							//Esecuzione Query
 							
-							$q= "SELECT CONCAT(utenti.Nome,' ', utenti.Cognome) AS Utente, CONCAT (classi.`Numero classe`, ' ', classi.Sezione, ' ', corsi.nome) 
-							AS Classe, prenotazioni.`Numero fotocopie`, prenotazioni.Formato, prenotazioni.Fogli, prenotazioni.`Data`, prenotazioni.DataRichiesta, 
-							prenotazioni.Eseguito";
+							$q= "SELECT prenotazioni.ID, CONCAT(utenti.Nome,' ', utenti.Cognome) AS Utente, CONCAT (classi.`Numero classe`, ' ', classi.Sezione, ' ', corsi.nome) 
+							AS Classe, prenotazioni.`Numero fotocopie`, (CASE WHEN prenotazioni.Formato = 1 THEN \"A4\" ELSE \"A3\" END) AS Formato, 
+							(CASE WHEN prenotazioni.Fogli = 1 THEN \"singoli\" ELSE \"fronte/retro\" END) AS Fogli, prenotazioni.`Data`, prenotazioni.DataRichiesta, 
+							prenotazioni.Eseguito, prenotazioni.FileName";
 							$q.= " FROM utenti, classi, prenotazioni, corsi";
 							$q.=" WHERE utenti.ID = prenotazioni.ID_Utente AND classi.ID = prenotazioni.ID_Classe AND corsi.ID = classi.Corso";
 							$q.=" AND prenotazioni.Eseguito='0'";
+							$q.=" ORDER BY prenotazioni.DataRichiesta DESC";
 							
 							$result =$link->query($q);
 							if($link->errno)
@@ -56,37 +87,46 @@
 								// Stampo a video i valori di ogni riga
 								while($row=$result->fetch_assoc())
 								{
-									$todays_date = date("d-m-Y");
-									$today = strtotime($todays_date);
-									$dataRitiro = strtotime($row["DataRichiesta"]); 
-									if ($dataRitiro > $today)
-									{
-										echo "<tr><font color=\"green\">";
-											foreach($row as $valore)
-												echo "<td>$valore</td>";
-										echo "</font></tr>";
-										
-									} 
-									else 
-									{ 
-										echo "<tr><font color=\"red\">";
-											foreach($row as $valore)
-												echo "<td>$valore</td>";
-										echo "</font></tr>";
-									}
-									/*
 									echo "<tr>";
-										if($row["Eseguito"])
+									$timestamp = time();
+									$data = date('Y-m-d', $timestamp);
+									$today = strtotime($data);
+									$dataRichiesta = strtotime($row["DataRichiesta"]);
+									if ($dataRichiesta > $today)					
+									{
+										foreach($row as $k=>$valore)
 										{
-											echo "<input type=\checkbox\" name=\"eseguito\" value='1'";
+											if ($k == "FileName" && $valore!=null)
+												echo "<td><a href = 'file/$valore'>link</a> </td>";
+											else if ($k == "FileName" && $valore == null)
+												echo "<td><font color=\"green\">file non presente</font></td>";
+											else
+												echo "<td><font color=\"green\">$valore</font></td>";
 										}
-										else
+									}
+									else 
+									{
+										$ID=0;
+										foreach($row as $k=>$valore)
 										{
-											foreach($row as $valore)
-												echo "<td>$valore</td>";
+											if ($k == "ID")
+											{
+												$ID = $valore;
+												echo "<td><font color=\"red\">$valore</font></td>";
+											}
+											else if ($k == "FileName" && $valore!=null)
+												echo "<td><a href = 'file/$valore'>link</a></td>";
+											else if ($k == "FileName" && $valore == null)
+												echo "<td><font color=\"red\">file non presente</font></td>";
+											else if ($k == "Eseguito")
+											{
+												echo "<td><input type=\"button\" value=\"Esegui\" onClick=\"ConfermaEsecuzione()\"></td>";
+											}
+											else
+												echo "<td><font color=\"red\">$valore</font></td>";
 										}
+									}
 									echo "</tr>";
-									*/
 								}
 							echo "</table>";
 						?>
