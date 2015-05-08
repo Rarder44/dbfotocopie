@@ -66,9 +66,9 @@ if(!CheckSessionLogin())
 							//Esecuzione Query
 							
 							$q= "SELECT prenotazioni.ID, CONCAT(utenti.Nome,' ', utenti.Cognome) AS Utente, CONCAT (classi.`Numero classe`, ' ', classi.Sezione, ' ', corsi.nome) 
-							AS Classe, prenotazioni.`Numero fotocopie`, (CASE WHEN prenotazioni.Formato = 1 THEN \"A4\" ELSE \"A3\" END) AS Formato, 
+							AS Classe, prenotazioni.`Numero fotocopie` as 'Num. copie', (CASE WHEN prenotazioni.Formato = 1 THEN \"A4\" ELSE \"A3\" END) AS 'Form.', 
 							(CASE WHEN prenotazioni.Fogli = 1 THEN \"singoli\" ELSE \"fronte/retro\" END) AS Fogli, prenotazioni.`Data`, prenotazioni.DataRichiesta, 
-							prenotazioni.Eseguito, prenotazioni.FileName";
+							prenotazioni.Eseguito, prenotazioni.FileName as 'File'";
 							$q.= " FROM utenti, classi, prenotazioni, corsi";
 							$q.=" WHERE utenti.ID = prenotazioni.ID_Utente AND classi.ID = prenotazioni.ID_Classe AND corsi.ID = classi.Corso";
 							$q.=" AND prenotazioni.Eseguito='0'";
@@ -78,9 +78,10 @@ if(!CheckSessionLogin())
 							if($link->errno)
 								die('Invalid query: ' .$link->error); 				
 														
-							echo "<table border=\"3\">";
+							echo "<table border=\"3\" style='  width: 100%;'>";
 								echo "<tr>";
 								while ($finfo = $result->fetch_field()) 
+									if($finfo->name!="ID")
 									echo "<td>".$finfo->name."</td>";
 								echo "</tr>";
 							
@@ -96,11 +97,11 @@ if(!CheckSessionLogin())
 									{
 										foreach($row as $k=>$valore)
 										{
-											if ($k == "FileName" && $valore!=null)
-												echo "<td><a href = 'file/$valore'>link</a> </td>";
-											else if ($k == "FileName" && $valore == null)
-												echo "<td><font color=\"green\">file non presente</font></td>";
-											else
+											if ($k == "File" && $valore!=null)
+												echo "<td style='  text-align: center;' ><a  href = 'file/$valore'>link</a> </td>";
+											else if ($k == "File" && $valore == null)
+												echo "<td style='  text-align: center;' ><font  color=\"green\"> - </font></td>";
+											else if($k != "ID")
 												echo "<td><font color=\"green\">$valore</font></td>";
 										}
 									}
@@ -112,12 +113,12 @@ if(!CheckSessionLogin())
 											if ($k == "ID")
 											{
 												$ID = $valore;
-												echo "<td><font color=\"red\">$valore</font></td>";
+												//echo "<td><font color=\"red\">$valore</font></td>";
 											}
-											else if ($k == "FileName" && $valore!=null)
-												echo "<td><a href = 'file/$valore'>link</a></td>";
-											else if ($k == "FileName" && $valore == null)
-												echo "<td><font color=\"red\">file non presente</font></td>";
+											else if ($k == "File" && $valore!=null)
+												echo "<td style='  text-align: center;' ><a href = 'file/$valore'>link</a></td>";
+											else if ($k == "File" && $valore == null)
+												echo "<td style='  text-align: center;' ><font color=\"red\"> - </font></td>";
 											else if ($k == "Eseguito")
 											{
 												echo "<td><input type=\"button\" value=\"Esegui\" onClick=\"ConfermaEsecuzione()\"></td>";

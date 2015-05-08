@@ -37,9 +37,9 @@
 							//Esecuzione Query
 							
 							$q= "SELECT CONCAT(utenti.Nome,' ', utenti.Cognome) AS Utente, CONCAT (classi.`Numero classe`, ' ', classi.Sezione, ' ', corsi.nome) 
-							AS Classe, prenotazioni.`Numero fotocopie`, (CASE WHEN prenotazioni.Formato = 1 THEN \"A4\" ELSE \"A3\" END) AS Formato, 
+							AS Classe, prenotazioni.`Numero fotocopie` as 'Num. copie', (CASE WHEN prenotazioni.Formato = 1 THEN \"A4\" ELSE \"A3\" END) AS 'Form.', 
 							(CASE WHEN prenotazioni.Fogli = 1 THEN \"singoli\" ELSE \"fronte/retro\" END) AS Fogli, prenotazioni.`Data`, prenotazioni.DataRichiesta, 
-							(CASE WHEN prenotazioni.Eseguito = 0 THEN \"non eseguito\" ELSE \"eseguito\" END) AS Eseguito, prenotazioni.FileName, prenotazioni.DataEsecuzione";
+							(CASE WHEN prenotazioni.Eseguito = 0 THEN \"NO\" ELSE \"SI\" END) AS Eseguito, prenotazioni.FileName as 'File', prenotazioni.DataEsecuzione";
 							$q.= " FROM utenti, classi, prenotazioni, corsi";
 							$q.=" WHERE utenti.ID = prenotazioni.ID_Utente AND classi.ID = prenotazioni.ID_Classe AND corsi.ID = classi.Corso";
 							
@@ -47,7 +47,7 @@
 							if($link->errno)
 								die('Invalid query: ' .$link->error); 				
 														
-							echo "<table border=\"3\">";
+							echo "<table style='width:100%;' border=\"3\">";
 								echo "<tr>";
 								while ($finfo = $result->fetch_field()) 
 									echo "<td>".$finfo->name."</td>";
@@ -59,10 +59,10 @@
 									echo "<tr>";
 										foreach($row as $k=>$valore)
 										{
-											if ($k == "FileName" && $valore!=null)
-												echo "<td> <a href = 'file/$valore'>link</a> </td>";
-											else if ($k == "FileName" && $valore == null)
-												echo "<td>file non presente</td>";
+											if ($k == "File" && $valore!=null)
+												echo "<td style='  text-align: center;'> <a href = 'file/$valore'>link</a> </td>";
+											else if ($k == "File" && $valore == null)
+												echo "<td style='  text-align: center;'>-</td>";
 											else
 												echo "<td>$valore</td>";
 										}
