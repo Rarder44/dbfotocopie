@@ -19,8 +19,9 @@
 	$menuSide["Loggato"]["1"]="";
 	$menuSide["Loggato"]["1"].="<a href='InserisciPrenotazione.php' class='bottoneSidebar'>Inserisci Prenotazione</a>";
 	$menuSide["Loggato"]["1"].="<a href='ModificaUtenti.php' class='bottoneSidebar'>Utenti</a>";	
+	$menuSide["Loggato"]["1"].="<a href='StoricoPrenotazioni.php' class='bottoneSidebar'>Visualizza Storico Prenotazioni</a>";
+	$menuSide["Loggato"]["1"].="<a href='PrenotazioniCorrenti.php' class='bottoneSidebar'>Visualizza Prenotazioni Correnti</a>";
 	
-
 	//Utenti
 	$menuSide["Loggato"]["2"]="";
 	$menuSide["Loggato"]["2"].="<a href='InserisciPrenotazione.php' class='bottoneSidebar'>Inserisci Prenotazione</a>";

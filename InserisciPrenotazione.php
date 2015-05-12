@@ -106,7 +106,23 @@ if(isset($_FILES["fileToUpload"]))
 			$(i).click(); // clicca sul bottone, aprendo la finestra di dialogo per la selezione dell'immagine da disco									
 		}
 	});
-	
+	/*
+	function caricaAlunni(id)
+	{
+		<?php
+		
+		global $link;
+		
+		$query = "SELECT classi.`Numero alunni` from classi where ID = " . id;
+		
+		$result=$link->query($q);
+		
+		while($row=$result->fetch_assoc())
+			$numAlunni = $row["Numero alunni"];
+		?>
+		document.prenotazione.n_alunni.value= $numAlunni;
+	}
+	*/
 	function Form_CHECK()
 	{
 		var num_alunni = document.prenotazione.n_alunni.value;
@@ -229,7 +245,7 @@ if(isset($_FILES["fileToUpload"]))
 								
 								if($_SESSION["privilegio"]==1)
 								{
-									$q = "select classi.ID, CONCAT( classi.`Numero classe`,' ',classi.Sezione, corsi.Nome,' - ',classi.`Fotocopie rimanenti`) as classe from classi, corsi";
+									$q = "select classi.ID, CONCAT( classi.`Numero classe`,' ',classi.Sezione, ' ', corsi.Nome,' - ',classi.`Fotocopie rimanenti`) as classe from classi, corsi";
 									$q .= " where classi.Corso = corsi.ID"; 
 									
 								
@@ -241,7 +257,7 @@ if(isset($_FILES["fileToUpload"]))
 								}
 								else
 								{
-									$q = "select classi.ID, CONCAT( classi.`Numero classe`,' ',classi.Sezione, corsi.Nome,' - ',classi.`Fotocopie rimanenti`) as classe from utenti, classi, insegna, corsi where utenti.ID = insegna.ID_Utente and insegna.ID_Classe = classi.ID  and classi.Corso = corsi.ID and utenti.`Username` = 'docente_1'";
+									$q = "select classi.ID, CONCAT( classi.`Numero classe`,' ',classi.Sezione, ' ',corsi.Nome,' - ',classi.`Fotocopie rimanenti`) as classe from utenti, classi, insegna, corsi where utenti.ID = insegna.ID_Utente and insegna.ID_Classe = classi.ID  and classi.Corso = corsi.ID and utenti.`Username` = 'docente_1'";
 									
 									$result=$link->query($q);
 									while($row=$result->fetch_assoc())

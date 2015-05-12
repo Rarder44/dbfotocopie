@@ -30,24 +30,13 @@ if(!CheckSessionLogin())
 		LoadListaClassi();
 
 		
-		//TEST
-		$("#ButtonAddUtente").click(function(){
-			
-		
-		});
-		
+		//Eventi Bottoni Utenti
 		$("#ButtonUtentiShowDivHidden").click(function(){
 			$("#div_cerca_utenti_hidden").slideToggle(400);
-		});
-		
-		
-		$("#ButtonClassiShowDivHidden").click(function(){
-			$("#div_cerca_Classi_hidden").slideToggle(400);
 		});
 		$("#ButtonCanceldit").click(function(){
 			CancelEditUtente();
 		});
-		
 		$("#ButtonSaveEdit").click(function(){	
 			if($("#dati_utenti_Password").attr("cambia-pass")=="si")
 				EditUtente($(".cont_dati_utenti").attr("id-ut"),$("#dati_utenti_nome").val(),$("#dati_utenti_cognome").val(),$("#dati_utenti_mail").val(),$("#dati_utenti_user").val(),$("#dati_utenti_Privilegio").val(),$("#dati_utenti_Password").val());
@@ -64,8 +53,6 @@ if(!CheckSessionLogin())
 			CancelEditUtente();
 			LoadListaUtentiCerca($("#cerca_utenti_combo_campo").val(),$("#Cerca_utenti_textbox").val());
 		});
-		
-		
 		$("#ConfirmPassChange").click(function(){			
 			if($("#dati_utenti_Password").attr("cambia-pass")=="si")
 			{
@@ -79,6 +66,29 @@ if(!CheckSessionLogin())
 				$("#dati_utenti_Password").addClass("verde");
 				$("#ConfirmPassChange").text("✗");
 			}
+		});
+		
+		
+		
+		//Eventi Bottoni Classi
+		$("#ButtonClassiShowDivHidden").click(function(){
+			$("#div_cerca_Classi_hidden").slideToggle(400);
+		});
+		$("#ButtonCancelEditClasse").click(function(){
+			CancelEditClasse();
+		});		
+		$("#ButtonSaveEditClasse").click(function(){	
+			EditClasse($(".cont_dati_classi").attr("id-ut"),$("#dati_classe_numero").val(),$("#dati_classe_sezione").val(),$("#dati_classe_corso").val(),$("#dati_classe_Nalunni").val(),$("#dati_classe_fotocopie").val());
+		});
+		$("#ButtonRemoveClasse").click(function(){			
+			RemoveClasse($(".cont_dati_classi").attr("id-ut"));
+		});
+		$("#ButtonAddClasse").click(function(){			
+			AddClasse($("#dati_classe_numero").val(),$("#dati_classe_sezione").val(),$("#dati_classe_corso").val(),$("#dati_classe_Nalunni").val(),$("#dati_classe_fotocopie").val());
+		});
+		$("#ButtonCercaClassi").click(function(){			
+			CancelEditClasse();
+			LoadListaClassiCerca($("#cerca_Classi_combo_corso").val());
 		});
 	});
 	
@@ -113,6 +123,11 @@ if(!CheckSessionLogin())
 			}
 			else
 			{
+				var v1=document.createElement('OPTION');
+				$(v1).append(" - ");
+				$(v1).val(-1);
+				$("#cerca_Classi_combo_corso").append(v1);
+				
 				$.each(arr["dato"], function( index, value ) {
 					var v1=document.createElement('OPTION');
 					$(v1).append(value["nome"]);
@@ -273,7 +288,7 @@ if(!CheckSessionLogin())
 			else
 			{
 				CancelEditUtente();
-				LoadListaUtentiCerca($("#cerca_utenti_combo_campo").val(),$("#Cerca_utenti_textbox").val());
+				LoadListaUtenti();
 			}
 		});
 	}
@@ -391,9 +406,39 @@ if(!CheckSessionLogin())
 			}
 		});
 	}
-	function LoadListaClassiCerca(Key)
+	function LoadListaClassiCerca(corso)
 	{
-		
+		if(corso==-1)
+			LoadListaClassi()
+		else
+		{
+			$.post("include/db_worker.php",{LoadListaClassiCerca:1,corso:corso},function(data){
+				var arr=JSONfn.parse(data);
+				if(arr["err"]==1)
+				{
+					alert(arr["mess"]);
+				}
+				else
+				{
+					$("#Lista_Classi table").html("");
+					$.each(arr["dato"], function( index, value ) {
+						var v1=document.createElement('tr');
+						$(v1).attr("id-cl",value["ID"]);
+						var v2=document.createElement('td');
+						$(v2).append(value["Nome"]);
+						$(v1).append(v2);
+						$(v1).click(function()
+						{
+							UnselectAllClassi();
+							$(this).addClass("selected");
+							LoadDatiClasse($(this).attr("id-cl"));
+						});
+						
+						$("#Lista_Classi table").append(v1);
+					});
+				}
+			});
+		}
 	}
 	function LoadDatiClasse(ID)
 	{
@@ -424,15 +469,65 @@ if(!CheckSessionLogin())
 	}
 	function AddClasse(Numero,Sezione,Corso,Numero_Alunni,Fotocopie)
 	{
-		
+		$.post("include/db_worker.php",{AddClasse:1,Numero:Numero,Sezione:Sezione,Corso:Corso,Numero_Alunni:Numero_Alunni,Fotocopie:Fotocopie},function(data){
+			var arr=JSONfn.parse(data);
+			if(arr["err"]==1)
+			{
+				alert(arr["mess"]);
+			}
+			else
+			{
+				CancelEditClasse();
+				LoadListaClassi();
+			}
+		});
 	}
 	function RemoveClasse(ID)
 	{
-		
+		$.post("include/db_worker.php",{RemoveClasse:1,ID:ID},function(data){
+			var arr=JSONfn.parse(data);
+			if(arr["err"]==1)
+			{
+				alert(arr["mess"]);
+			}
+			else
+			{
+				CancelEditClasse();
+				LoadListaClassiCerca($("#cerca_Classi_combo_corso").val());
+			}
+		});
 	}
 	function EditClasse(ID,Numero,Sezione,Corso,Numero_Alunni,Fotocopie)
 	{
+		$.post("include/db_worker.php",{EditClasse:1,ID:ID,Numero:Numero,Sezione:Sezione,Corso:Corso,Numero_Alunni:Numero_Alunni,Fotocopie:Fotocopie},function(data){
+				var arr=JSONfn.parse(data);
+				if(arr["err"]==1)
+				{
+					alert(arr["mess"]);
+				}
+				else
+				{
+					CancelEditClasse();
+					LoadListaClassiCerca($("#cerca_Classi_combo_corso").val());
+				}
+		});
+	}
+	function CancelEditClasse()
+	{
+		$("#ButtonCancelEditClasse").attr('disabled','disabled');
+		$("#ButtonSaveEditClasse").attr('disabled','disabled');
+		$("#ButtonRemoveClasse").attr('disabled','disabled');
 		
+		
+		$("#dati_classe_numero").val("");
+		$("#dati_classe_sezione").val("");
+		$("#dati_classe_corso").val("");
+		$("#dati_classe_Nalunni").val("");
+		$("#dati_classe_fotocopie").val("");
+		$(".cont_dati_classi").removeAttr("id-ut");
+		
+				
+		UnselectAllClassi();
 	}
 	function UnselectAllClassi()
 	{
@@ -713,7 +808,7 @@ if(!CheckSessionLogin())
 																			
 																		</td>
 																		<td>
-																			<button id="ButtonCercaUtenti">Cerca</button>
+																			<button id="ButtonCercaClassi">Cerca</button>
 																		</td>
 																		
 																	</tr>

@@ -1,0 +1,21 @@
+#include <random>
+using namespace std;
+
+random_device rd;
+mt19937 gen;
+
+onInitDialog()
+{
+
+	gen=mt19937(rd());
+}
+
+void Scarica()
+{
+	uniform_int_distribution<int> dis(50, 100);
+	int soldi = dis(gen);
+	
+	uniform_int_distribution<int> dis(1000, 2000);
+	int timerSleep = dis(gen);
+	
+}

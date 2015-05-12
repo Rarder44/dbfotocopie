@@ -83,8 +83,8 @@ if(!CheckSessionLogin())
 							if ($mese < 10 && $mese > 1)
 								$mese = '0'.$mese;
 
-							$insert = "insert into prenotazioni (ID_Utente, ID_Classe, `Numero fotocopie`, Formato, Fogli, `Data`, Ora, DataRichiesta,FileName)";
-							$insert .=" values ($_SESSION[ID], $ID_Classe, $fotocopieTotali, $form, $fogli, NOW(), NOW(), '$anno-$mese-$giorno','$FileName')";
+							$insert = "insert into prenotazioni (ID_Utente, ID_Classe, `Numero alunni`, `Numero pagine`, `Numero fotocopie`, Formato, Fogli, `Data`, Ora, DataRichiesta,FileName)";
+							$insert .=" values ($_SESSION[ID], $ID_Classe, $alunni, $pagine, $fotocopieTotali, $form, $fogli, NOW(), NOW(), '$anno-$mese-$giorno','$FileName')";
 
 							global $link;
 							

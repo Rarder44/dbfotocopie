@@ -451,7 +451,7 @@
 								}
 								else
 								{
-									SendDato(null,"Utente eliminato correttamente");
+									SendDato(null,"Utente aggiunto correttamente");
 								}
 							}
 						}
@@ -547,7 +547,7 @@
 				//superadmin -> ottiene tutti gli utenti
 				if($priv==1)
 				{
-					$q="SELECT classi.ID,CONCAT(`Numero classe`,Sezione,\" \",corsi.nome) as Nome from classi INNER JOIN corsi on ( corsi.ID=Corso)";
+					$q="SELECT classi.ID,CONCAT(`Numero classe`,Sezione,\" \",corsi.nome) as Nome from classi INNER JOIN corsi on ( corsi.ID=Corso) ORDER BY Corso,Sezione,`Numero classe`";
 					$arr=array();
 					
 					$r=$link->query($q);
@@ -619,4 +619,206 @@
 			SendError("Autorizzazioni insufficenti");
 			
 	}
+
+	else if(isset($_POST["AddClasse"]) && isset($_POST["Numero"])&& isset($_POST["Sezione"])&& isset($_POST["Corso"])&& isset($_POST["Numero_Alunni"])&& isset($_POST["Fotocopie"]))
+	{
+		if(CheckSessionLogin())
+		{
+			if(isset($_SESSION["privilegio"])  && isset($_SESSION["user"])  )
+			{
+				$priv=$_SESSION["privilegio"];
+				$user=$_SESSION["user"];
+				
+				
+				//superadmin -> ottiene tutti gli utenti
+				if($priv==1)
+				{
+					$q="SELECT count(ID)as c from classi where `Numero classe`=$_POST[Numero] and Sezione='$_POST[Sezione]' and Corso=$_POST[Corso] ";
+					
+					
+					$r=$link->query($q);
+					if (!$r) {
+						$message  = 'Errore query: ' . $link->error . "<br>";
+						$message .= 'Whole query: ' . $q;
+						SendError($message );
+					}
+					else
+					{
+						
+						if($row=$r->fetch_assoc())
+						{
+							if($row["c"]>0)
+								SendError("La classe è già presente nel database");
+							
+							else
+							{
+								$q="INSERT into classi (`Numero classe`,Sezione,Corso,`Numero alunni`,`Fotocopie rimanenti`) VALUES($_POST[Numero],'$_POST[Sezione]',$_POST[Corso],$_POST[Numero_Alunni],$_POST[Fotocopie])";
+								$arr=array();
+								
+								$r=$link->query($q);
+								if (!$r) {
+									$message  = 'Errore query: ' . $link->error . "<br>";
+									$message .= 'Whole query: ' . $q;
+									SendError($message );
+								}
+								else
+								{
+									SendDato(null,"Classe aggiunta correttamente");
+								}
+							}
+						}
+						else
+							SendError("Errore nel recupero degli Utenti");
+
+					}
+
+				}
+				else
+					SendError("Autorizzazioni insufficenti");
+			}
+			else
+				SendError("Errore nel recupero del privilegio/user");
+		}
+		else
+			SendError("Autorizzazioni insufficenti");
+			
+	}
+	
+	else if(isset($_POST["RemoveClasse"]) && isset($_POST["ID"]))
+	{
+		if(CheckSessionLogin())
+		{
+			if(isset($_SESSION["privilegio"])  && isset($_SESSION["user"])  )
+			{
+				$priv=$_SESSION["privilegio"];
+				$user=$_SESSION["user"];
+				
+				
+				//superadmin -> ottiene tutti gli utenti
+				if($priv==1)
+				{
+					$q="delete from classi where ID=$_POST[ID];";
+					$arr=array();
+					
+					$r=$link->query($q);
+					if (!$r) {
+						$message  = 'Errore query: ' . $link->error . "<br>";
+						$message .= 'Whole query: ' . $q;
+						SendError($message );
+					}
+					else
+					{
+						SendDato(null,"Classe eliminata correttamente");
+					}
+				}
+				else
+					SendError("Autorizzazioni insufficenti");
+			}
+			else
+				SendError("Errore nel recupero del privilegio/user");
+		}
+		else
+			SendError("Autorizzazioni insufficenti");
+			
+	}
+		else if(isset($_POST["EditClasse"]) && isset($_POST["ID"])&& isset($_POST["Numero"])&& isset($_POST["Sezione"])&& isset($_POST["Corso"])&& isset($_POST["Numero_Alunni"])&& isset($_POST["Fotocopie"]))
+	{
+		if(CheckSessionLogin())
+		{
+			if(isset($_SESSION["privilegio"])  && isset($_SESSION["user"])  )
+			{
+				$priv=$_SESSION["privilegio"];
+				$user=$_SESSION["user"];
+				
+				
+				//superadmin -> ottiene tutti gli utenti
+				if($priv==1)
+				{
+					$q="SELECT count(ID)as c from classi where `Numero classe`=$_POST[Numero] and Sezione='$_POST[Sezione]' and Corso=$_POST[Corso] ";
+					
+					
+					$r=$link->query($q);
+					if (!$r) {
+						$message  = 'Errore query: ' . $link->error . "<br>";
+						$message .= 'Whole query: ' . $q;
+						SendError($message );
+					}
+					else
+					{
+						
+						if($row=$r->fetch_assoc())
+						{
+							if($row["c"]>0)
+								SendError("La classe è già presente nel database");
+							else
+							{
+								$q="update classi set `Numero classe`=$_POST[Numero], Sezione='$_POST[Sezione]',Corso=$_POST[Corso],`Numero alunni`=$_POST[Numero_Alunni],`Fotocopie rimanenti`=$_POST[Fotocopie] where ID=$_POST[ID]";
+								$arr=array();
+								
+								$r=$link->query($q);
+								if (!$r) {
+									$message  = 'Errore query: ' . $link->error . "<br>";
+									$message .= 'Whole query: ' . $q;
+									SendError($message );
+								}
+								else
+								{
+									SendDato(null,"classe aggiornata correttamente");
+								}
+							}							
+						}
+					}
+				}
+				else
+					SendError("Autorizzazioni insufficenti");
+			}
+			else
+				SendError("Errore nel recupero del privilegio/user");
+		}
+		else
+			SendError("Autorizzazioni insufficenti");
+			
+	}
+	else if(isset($_POST["LoadListaClassiCerca"])  && isset($_POST["corso"]))
+	{
+		if(CheckSessionLogin())
+		{
+			if(isset($_SESSION["privilegio"])  && isset($_SESSION["user"])  )
+			{
+				$priv=$_SESSION["privilegio"];
+				$user=$_SESSION["user"];
+				
+				
+				//superadmin -> ottiene tutti gli utenti
+				if($priv==1)
+				{
+					$q="SELECT classi.ID,CONCAT(`Numero classe`,Sezione,\" \",corsi.nome) as Nome from classi INNER JOIN corsi on ( corsi.ID=Corso and Corso=$_POST[corso])";
+					$arr=array();
+					
+					$r=$link->query($q);
+					if (!$r) {
+						$message  = 'Errore query: ' . $link->error . "<br>";
+						$message .= 'Whole query: ' . $q;
+						SendError($message );
+					}
+					else
+					{
+						while($row=$r->fetch_assoc())
+						{
+							$arr[]=$row;
+						}
+						SendDato($arr);
+					}
+				}
+				else
+					SendError("Autorizzazioni insufficenti");
+			}
+			else
+				SendError("Errore nel recupero del privilegio/user");
+		}
+		else
+			SendError("Autorizzazioni insufficenti");
+			
+	}
+	
 ?>
