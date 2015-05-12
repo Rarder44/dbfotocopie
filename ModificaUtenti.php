@@ -279,6 +279,12 @@ if(!CheckSessionLogin())
 	}
 	function AddUtente(Nome,Cognome,Mail,Username,Password,Privilegio)
 	{
+		if(Nome.trim()=="" || Cognome.trim()=="" || Mail.trim()=="" || Username.trim()=="" )
+		{
+			alert("Non sono ammessi campi vuoti");
+			return;
+		}
+		
 		$.post("include/db_worker.php",{AddUtente:1,Nome:Nome,Cognome:Cognome,Mail:Mail,Username:Username,Password:Password,Privilegio:Privilegio},function(data){
 			var arr=JSONfn.parse(data);
 			if(arr["err"]==1)
@@ -309,6 +315,11 @@ if(!CheckSessionLogin())
 	}
 	function EditUtente(ID,Nome,Cognome,Mail,Username,Privilegio,Password)
 	{
+		if(Nome.trim()=="" || Cognome.trim()=="" || Mail.trim()=="" || Username.trim()=="" )
+		{
+			alert("Non sono ammessi campi vuoti");
+			return;
+		}
 		//Senza cambio pass
 		if (typeof Password == 'undefined')
 		{
@@ -469,6 +480,26 @@ if(!CheckSessionLogin())
 	}
 	function AddClasse(Numero,Sezione,Corso,Numero_Alunni,Fotocopie)
 	{
+		if(Numero.trim()=="" || Sezione.trim()=="" || Numero_Alunni.trim()=="" || Fotocopie.trim()=="" )
+		{
+			alert("Non sono ammessi campi vuoti");
+			return;
+		}
+		else if( isNaN(Numero) || isNaN(Numero_Alunni) || isNaN(Fotocopie))
+		{
+			alert("Ricontrollare i Campi");
+			return;
+		}
+		var temp=parseInt(Numero);
+		if(temp>5||temp<1)
+		{
+			alert("La classe deve essere compresa tra 1 e 5");
+			return;
+		}
+		
+		
+		
+		
 		$.post("include/db_worker.php",{AddClasse:1,Numero:Numero,Sezione:Sezione,Corso:Corso,Numero_Alunni:Numero_Alunni,Fotocopie:Fotocopie},function(data){
 			var arr=JSONfn.parse(data);
 			if(arr["err"]==1)
@@ -499,6 +530,23 @@ if(!CheckSessionLogin())
 	}
 	function EditClasse(ID,Numero,Sezione,Corso,Numero_Alunni,Fotocopie)
 	{
+		if(Numero.trim()=="" || Sezione.trim()=="" || Numero_Alunni.trim()=="" || Fotocopie.trim()=="" )
+		{
+			alert("Non sono ammessi campi vuoti");
+			return;
+		}
+		else if( isNaN(Numero) || isNaN(Numero_Alunni) || isNaN(Fotocopie))
+		{
+			alert("Ricontrollare i Campi");
+			return;
+		}
+		var temp=parseInt(Numero);
+		if(temp>5||temp<1)
+		{
+			alert("La classe deve essere compresa tra 1 e 5");
+			return;
+		}
+		
 		$.post("include/db_worker.php",{EditClasse:1,ID:ID,Numero:Numero,Sezione:Sezione,Corso:Corso,Numero_Alunni:Numero_Alunni,Fotocopie:Fotocopie},function(data){
 				var arr=JSONfn.parse(data);
 				if(arr["err"]==1)

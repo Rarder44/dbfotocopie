@@ -36,7 +36,7 @@
 							global $link;
 							//Esecuzione Query
 							
-							$q= "SELECT CONCAT(utenti.Nome,' ', utenti.Cognome) AS Utente, CONCAT (classi.`Numero classe`, ' ', classi.Sezione, ' ', corsi.nome) 
+							/*$q= "SELECT CONCAT(utenti.Nome,' ', utenti.Cognome) AS Utente, CONCAT (classi.`Numero classe`, ' ', classi.Sezione, ' ', corsi.nome) 
 <<<<<<< HEAD
 							AS Classe, prenotazioni.`Numero alunni` AS Alunni, prenotazioni.`Numero pagine` AS Pagine, prenotazioni.`Numero fotocopie` as 'Num. copie', 
 							(CASE WHEN prenotazioni.Formato = 1 THEN \"A4\" ELSE \"A3\" END) AS 'Form.', 
@@ -46,6 +46,18 @@
 							(CASE WHEN prenotazioni.Fogli = 1 THEN \"singoli\" ELSE \"fronte/retro\" END) AS Fogli, prenotazioni.`Data`, prenotazioni.DataRichiesta, 
 >>>>>>> origin/master
 							(CASE WHEN prenotazioni.Eseguito = 0 THEN \"NO\" ELSE \"SI\" END) AS Eseguito, prenotazioni.FileName as 'File', prenotazioni.DataEsecuzione";
+							*/
+							
+							$q= "SELECT CONCAT(utenti.Nome,' ', utenti.Cognome) AS Utente, CONCAT (classi.`Numero classe`, ' ', classi.Sezione, ' ', corsi.nome) 
+
+							AS Classe, prenotazioni.`Numero alunni` AS Alunni, prenotazioni.`Numero pagine` AS Pagine, prenotazioni.`Numero fotocopie` as 'Num. copie', 
+							(CASE WHEN prenotazioni.Formato = 1 THEN \"A4\" ELSE \"A3\" END) AS 'Form.', 
+							(CASE WHEN prenotazioni.Fogli = 1 THEN \"s\" ELSE \"f/r\" END) AS Fogli,prenotazioni.DataRichiesta AS 'Data Ritiro', 
+
+							(CASE WHEN prenotazioni.Eseguito = 0 THEN \"NO\" ELSE \"SI\" END) AS Eseguito, prenotazioni.FileName as 'File', prenotazioni.DataEsecuzione";
+							
+							
+							
 							$q.= " FROM utenti, classi, prenotazioni, corsi";
 							$q.=" WHERE utenti.ID = prenotazioni.ID_Utente AND classi.ID = prenotazioni.ID_Classe AND corsi.ID = classi.Corso";
 							

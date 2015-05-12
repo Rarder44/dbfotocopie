@@ -15,28 +15,28 @@ if(!CheckSessionLogin())
 		<?php include("_head.php"); ?>	
 	
 	<script>
-	/*
-	function ConfermaEsecuzione(id)
+	
+	/*function ConfermaEsecuzione(id)
 	{
 		
 		if (confirm('Sicuro di voler procedere?') == true)
 		{
 			alert(id);
-			//alert("Esecuzione Avvenuta!!");
+			alert("Esecuzione Avvenuta!!");*/
 			<?php
-			global $link;
+			/*global $link;
 			$update = "UPDATE prenotazioni.Eseguito SET Eseguito='1' AND DataEsecuzione=NOW()  WHERE id=" . id;
 			
 			if ($conn->query($sql) === true)
 				echo "Record updated successfully";
 			else
 				echo "Error updating record: " . $conn->error;
-				
+				*/
 			?>
-
+/*
 		}
-	}
-	*/
+	}*/
+	
 	</script>
 	</head>
 	<body>

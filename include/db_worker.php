@@ -734,7 +734,7 @@
 				//superadmin -> ottiene tutti gli utenti
 				if($priv==1)
 				{
-					$q="SELECT count(ID)as c from classi where `Numero classe`=$_POST[Numero] and Sezione='$_POST[Sezione]' and Corso=$_POST[Corso] ";
+					$q="SELECT count(ID)as c from classi where `Numero classe`=$_POST[Numero] and Sezione='$_POST[Sezione]' and Corso=$_POST[Corso] and ID<>$_POST[ID]";
 					
 					
 					$r=$link->query($q);

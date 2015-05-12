@@ -59,155 +59,175 @@ if(isset($_FILES["fileToUpload"]))
 	<head>
 		<?php include("_head.php"); ?>		
 		<script src="js/date.js"></script>
-</head>
-<script type="text/javascript">
-	$(document).ready(function(){
-		//funzione che non fa inserire nella casella di testo tutto ciò che non sono numeri
-		$("#n_pagine, #n_alunni, #giorno, #mese, #anno").keypress( function(e) { return (e.charCode<48 || e.charCode>57)?false:true;});
-		//quando clicco sul pulsante upload
-		$("#upload").click(function(){
-		UploadFile();
-		});
 	
-		function UploadFile() // funzione che permette di selezionare l'immagine da disco e metterla in una cartella temporanea per visualizzarla
-		{
-			var iframe=document.createElement('iframe'); //crea un iframe e lo mette nella variabile iframe
-			$(iframe).css("display","none"); // imposta l'attributo display dell'iframe a "none", cioè non visibile
-			var form=document.createElement('form'); //crea un form e lo mette nella variabile form
-			$(form).attr("method","POST"); //imposta come metodo del form il POST
-			$(form).attr("enctype","multipart/form-data"); //imposta come enctype del form multipart/form-data
-			$(form).attr("action","InserisciPrenotazione.php"); // imposta come action del form il file "upload.php" contenente il codice php				
-			var i=document.createElement('input'); // crea un input e lo mette nella variabile i
-			$(i).attr("type","file"); //imposta come tipo di input di i "file"
-			$(i).attr("name","fileToUpload"); //imposta come nome di i "fileToUpload"		
-			$(form).append(i); //aggiunge al form l'input i (fileToUpload)
-			$("#UploaderDiv").append(iframe); //aggiunge al div UploaderDiv l'iframe creato sopra
-			$(iframe).contents().find('html').append(form);  //aggiunge all'iframe il form creato
-			$(i).change( // al cambio del file selezionato da disco imposta la seguente funzione
-			function() 
-			{	
-				$(form).submit(); // effettua il submit
-				$(iframe).load(function() // quando l'iframe e il suo contenuto sono stati compleatamente caricati
-				{	
-					var v=$(iframe).contents().find('html').text();
-					var arr=JSONfn.parse(v); // converto in array la stringa JSON che ho ricevuto
-					if(arr["err"]==1) // se è presente un errore
-					{
-						alert(arr["mess"]);
-					}
-					else // se non è presente
-					{
-						$("#testotemp").text(arr["dato"]["filename"]); 
-						$("#tempFileName").val(arr["dato"]["filename"]);
-						
-					}						
-				});
+	
+	<script type="text/javascript">
+		$(document).ready(function(){
+			//funzione che non fa inserire nella casella di testo tutto ciò che non sono numeri
+			$("#n_pagine, #n_alunni, #giorno, #mese, #anno").keypress( function(e) { return (e.charCode<48 || e.charCode>57)?false:true;});
+			
+			//quando clicco sul pulsante upload
+			$("#upload").click(function(){
+			UploadFile();
 			});
-			$(i).click(); // clicca sul bottone, aprendo la finestra di dialogo per la selezione dell'immagine da disco									
-		}
-	});
-	/*
-	function caricaAlunni(id)
-	{
-		<?php
+			
 		
-		global $link;
-		
-		$query = "SELECT classi.`Numero alunni` from classi where ID = " . id;
-		
-		$result=$link->query($q);
-		
-		while($row=$result->fetch_assoc())
-			$numAlunni = $row["Numero alunni"];
-		?>
-		document.prenotazione.n_alunni.value= $numAlunni;
-	}
-	*/
-	function Form_CHECK()
-	{
-		var num_alunni = document.prenotazione.n_alunni.value;
-		var num_pagine = document.prenotazione.n_pagine.value;
-		var giorno = document.prenotazione.giorno.value;
-		var mese = document.prenotazione.mese.value;
-		var anno = document.prenotazione.anno.value;
-		var data = new Date();
-		var annoCorrente = data.getFullYear();
-		if (num_alunni == "")
-		{
-			alert("Attenzione, devi inserire il numero degli alunni");
-			return false;
-		}
-		else if (num_pagine == "")
-		{
-			alert("Attenzione, devi inserire il numero delle pagine");
-			return false;
-		}
-		else if (giorno == "")
-		{
-			alert("Attenzione, devi inserire il giorno");
-			return false;
-		}
-		else if (mese == "")
-		{
-			alert("Attenzione, devi inserire il mese");
-			return false;
-		}
-		else if (anno == "")
-		{
-			alert("Attenzione, devi inserire l'anno");
-			return false;
-		}
-		else if (mese > 12)
-		{
-			alert("Attenzione, mese non corretto!");
-			return false;
-		}
-		else if (anno != annoCorrente && anno != (annoCorrente+1))
-		{
-			alert("Attenzione, anno non corretto!!");
-			return false;
-		}
-		else if (mese == 1 || mese == 3 || mese == 5 || mese == 7 || mese == 8 || mese == 10 || mese == 12) // 1-3-5-7-8-10-12
-		{
-			if (giorno > 31)
+			function UploadFile() // funzione che permette di selezionare l'immagine da disco e metterla in una cartella temporanea per visualizzarla
 			{
-				alert("Attenzione, giorno non valido");
-				return false;
+				var iframe=document.createElement('iframe'); //crea un iframe e lo mette nella variabile iframe
+				$(iframe).css("display","none"); // imposta l'attributo display dell'iframe a "none", cioè non visibile
+				var form=document.createElement('form'); //crea un form e lo mette nella variabile form
+				$(form).attr("method","POST"); //imposta come metodo del form il POST
+				$(form).attr("enctype","multipart/form-data"); //imposta come enctype del form multipart/form-data
+				$(form).attr("action","InserisciPrenotazione.php"); // imposta come action del form il file "upload.php" contenente il codice php				
+				var i=document.createElement('input'); // crea un input e lo mette nella variabile i
+				$(i).attr("type","file"); //imposta come tipo di input di i "file"
+				$(i).attr("name","fileToUpload"); //imposta come nome di i "fileToUpload"		
+				$(form).append(i); //aggiunge al form l'input i (fileToUpload)
+				$("#UploaderDiv").append(iframe); //aggiunge al div UploaderDiv l'iframe creato sopra
+				$(iframe).contents().find('html').append(form);  //aggiunge all'iframe il form creato
+				$(i).change( // al cambio del file selezionato da disco imposta la seguente funzione
+				function() 
+				{	
+					$(form).submit(); // effettua il submit
+					$(iframe).load(function() // quando l'iframe e il suo contenuto sono stati compleatamente caricati
+					{	
+						var v=$(iframe).contents().find('html').text();
+						var arr=JSONfn.parse(v); // converto in array la stringa JSON che ho ricevuto
+						if(arr["err"]==1) // se è presente un errore
+						{
+							alert(arr["mess"]);
+						}
+						else // se non è presente
+						{
+							$("#testotemp").text(arr["dato"]["filename"]); 
+							$("#tempFileName").val(arr["dato"]["filename"]);
+							
+						}						
+					});
+				});
+				$(i).click(); // clicca sul bottone, aprendo la finestra di dialogo per la selezione dell'immagine da disco									
 			}
-		}
-		else if (mese == 2) // mese di febbraio
+			
+			
+			$("#SelectClasse").change(function(){
+				caricaAlunni($(this).val());
+			});
+		});
+		
+		function caricaAlunni(id)
 		{
-			if (anno % 4 == 0) // controllo se l'anno è bisestile
+			if(id=="")
 			{
-				if (giorno > 29)
-				{
-					alert("Attenzione, giorno non valido!");
-					return false;
-				}
+				
 			}
 			else
 			{
-				if (giorno > 28)
+				//TODO: CARICAMENTO AJAX DEL NUMERO DEGLI ALUNNI
+				alert(id);
+			}
+				
+			<?php
+			
+			//LA PARTE PHP VA NEL FILE DB_WORKER ( E RICHIAMATA ATTRAVERSO AJAX )
+			/*global $link;
+			
+			$query = "SELECT classi.`Numero alunni` from classi where ID = " . id;
+			
+			$result=$link->query($q);
+			
+			while($row=$result->fetch_assoc())
+				$numAlunni = $row["Numero alunni"];*/
+			?>
+			//document.prenotazione.n_alunni.value= $numAlunni;
+		}
+		
+		function Form_CHECK()
+		{
+			var num_alunni = document.prenotazione.n_alunni.value;
+			var num_pagine = document.prenotazione.n_pagine.value;
+			var giorno = document.prenotazione.giorno.value;
+			var mese = document.prenotazione.mese.value;
+			var anno = document.prenotazione.anno.value;
+			var data = new Date();
+			var annoCorrente = data.getFullYear();
+			if (num_alunni == "")
+			{
+				alert("Attenzione, devi inserire il numero degli alunni");
+				return false;
+			}
+			else if (num_pagine == "")
+			{
+				alert("Attenzione, devi inserire il numero delle pagine");
+				return false;
+			}
+			else if (giorno == "")
+			{
+				alert("Attenzione, devi inserire il giorno");
+				return false;
+			}
+			else if (mese == "")
+			{
+				alert("Attenzione, devi inserire il mese");
+				return false;
+			}
+			else if (anno == "")
+			{
+				alert("Attenzione, devi inserire l'anno");
+				return false;
+			}
+			else if (mese > 12)
+			{
+				alert("Attenzione, mese non corretto!");
+				return false;
+			}
+			else if (anno != annoCorrente && anno != (annoCorrente+1))
+			{
+				alert("Attenzione, anno non corretto!!");
+				return false;
+			}
+			else if (mese == 1 || mese == 3 || mese == 5 || mese == 7 || mese == 8 || mese == 10 || mese == 12) // 1-3-5-7-8-10-12
+			{
+				if (giorno > 31)
 				{
-					alert("Attenzione, giorno non valido!");
+					alert("Attenzione, giorno non valido");
 					return false;
 				}
 			}
+			else if (mese == 2) // mese di febbraio
+			{
+				if (anno % 4 == 0) // controllo se l'anno è bisestile
+				{
+					if (giorno > 29)
+					{
+						alert("Attenzione, giorno non valido!");
+						return false;
+					}
+				}
+				else
+				{
+					if (giorno > 28)
+					{
+						alert("Attenzione, giorno non valido!");
+						return false;
+					}
+				}
+				
+			}
 			
+			var gg3= Date.today().add(3).days().set({millisecond: 0,   second: 0,    minute: 0});
+			var d= Date.today().set({day:parseInt(giorno),month:parseInt(mese)-1,year:parseInt(anno),millisecond: 0,   second: 0,    minute: 0});
+			if(d.compareTo(gg3) == -1)
+			{
+				alert("Attenzione, Inserire una data maggiore di 3 gg da Oggi");
+				return false;
+			}		
+			
+			document.prenotazione.action = "PrenotazioneInserita.php";
+			document.prenotazione.submit();
 		}
-		
-		var gg3= Date.today().add(3).days().set({millisecond: 0,   second: 0,    minute: 0});
-		var d= Date.today().set({day:parseInt(giorno),month:parseInt(mese)-1,year:parseInt(anno),millisecond: 0,   second: 0,    minute: 0});
-		if(d.compareTo(gg3) == -1)
-		{
-			alert("Attenzione, Inserire una data maggiore di 3 gg da Oggi");
-			return false;
-		}		
-		
-		document.prenotazione.action = "PrenotazioneInserita.php";
-		document.prenotazione.submit();
-	}
-</script>
+	</script>
+</head>
 	<body>
 		<div class="box">
 			<table style="width:1050px;">
@@ -238,7 +258,7 @@ if(isset($_FILES["fileToUpload"]))
 						<br><br>
 						<form name="prenotazione" method="post">
 						Seleziona classe: 
-							<select name="classe">
+							<select name="classe" id="SelectClasse">
 							<option value=""></option>
 							<?php
 								global $link;
