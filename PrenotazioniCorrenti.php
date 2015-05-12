@@ -107,6 +107,7 @@ if(!CheckSessionLogin())
 										$ID=0;
 										foreach($row as $k=>$valore)
 										{
+<<<<<<< HEAD
 											
 											if ($k == "ID")
 											{
@@ -121,6 +122,12 @@ if(!CheckSessionLogin())
 											{
 												echo "<td><input type=\"button\" value=\"Esegui\" onClick=\"ConfermaEsecuzione($ID)\"></td>";
 											}
+=======
+											if ($k == "File" && $valore!=null)
+												echo "<td style='  text-align: center;' ><a  href = 'file/$valore'>link</a> </td>";
+											else if ($k == "File" && $valore == null)
+												echo "<td style='  text-align: center;' ><font  color=\"green\"> - </font></td>";
+>>>>>>> origin/master
 											else if($k != "ID")
 												echo "<td><font color=\"green\">$valore</font></td>";
 										}
@@ -133,6 +140,10 @@ if(!CheckSessionLogin())
 											if ($k == "ID")
 											{
 												$ID = $valore;
+<<<<<<< HEAD
+=======
+												//echo "<td><font color=\"red\">$valore</font></td>";
+>>>>>>> origin/master
 											}
 											else if ($k == "File" && $valore!=null)
 												echo "<td style='  text-align: center;' ><a href = 'file/$valore'>link</a></td>";
