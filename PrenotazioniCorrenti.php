@@ -15,7 +15,7 @@ if(!CheckSessionLogin())
 		<?php include("_head.php"); ?>	
 	
 	<script>
-	
+	/*
 	function ConfermaEsecuzione(id)
 	{
 		
@@ -23,7 +23,6 @@ if(!CheckSessionLogin())
 		{
 			alert(id);
 			//alert("Esecuzione Avvenuta!!");
-			/*
 			<?php
 			global $link;
 			$update = "UPDATE prenotazioni.Eseguito SET Eseguito='1' AND DataEsecuzione=NOW()  WHERE id=" . id;
@@ -34,10 +33,10 @@ if(!CheckSessionLogin())
 				echo "Error updating record: " . $conn->error;
 				
 			?>
-			*/
+
 		}
 	}
-	
+	*/
 	</script>
 	</head>
 	<body>
@@ -76,7 +75,7 @@ if(!CheckSessionLogin())
 							
 							$q= "SELECT prenotazioni.ID, CONCAT(utenti.Nome,' ', utenti.Cognome) AS Utente, CONCAT (classi.`Numero classe`, ' ', classi.Sezione, ' ', corsi.nome) 
 							AS Classe, prenotazioni.`Numero fotocopie` as 'Num. copie', (CASE WHEN prenotazioni.Formato = 1 THEN \"A4\" ELSE \"A3\" END) AS 'Form.', 
-							(CASE WHEN prenotazioni.Fogli = 1 THEN \"singoli\" ELSE \"fronte/retro\" END) AS Fogli, prenotazioni.`Data`, prenotazioni.DataRichiesta, 
+							(CASE WHEN prenotazioni.Fogli = 1 THEN \"singoli\" ELSE \"fronte/retro\" END) AS Fogli, prenotazioni.DataRichiesta AS 'Data Ritiro', 
 							prenotazioni.Eseguito, prenotazioni.FileName as 'File'";
 							$q.= " FROM utenti, classi, prenotazioni, corsi";
 							$q.=" WHERE utenti.ID = prenotazioni.ID_Utente AND classi.ID = prenotazioni.ID_Classe AND corsi.ID = classi.Corso";
@@ -101,35 +100,31 @@ if(!CheckSessionLogin())
 									$timestamp = time();
 									$data = date('Y-m-d', $timestamp);
 									$today = strtotime($data);
-									$dataRichiesta = strtotime($row["DataRichiesta"]);
+									$dataRichiesta = strtotime($row["Data Ritiro"]);
 									if ($dataRichiesta > $today)					
 									{
 										$ID=0;
 										foreach($row as $k=>$valore)
 										{
-<<<<<<< HEAD
 											
 											if ($k == "ID")
-											{
 												$ID = $valore;
-											
-											}
 											else if ($k == "File" && $valore!=null)
 												echo "<td style='  text-align: center;' ><a  href = 'file/$valore'>link</a> </td>";
 											else if ($k == "File" && $valore == null)
 												echo "<td style='  text-align: center;' ><font  color=\"green\"> - </font></td>";
 											else if ($k == "Eseguito")
-											{
 												echo "<td><input type=\"button\" value=\"Esegui\" onClick=\"ConfermaEsecuzione($ID)\"></td>";
+											else if ($k == "Data Ritiro")
+											{
+												// cambio il formato della data
+												$array = explode("-", $valore);
+												$data = $array[2]."/".$array[1]."/".$array[0];
+												echo "<td><font color=\"green\">$data</font></td>";
 											}
-=======
-											if ($k == "File" && $valore!=null)
-												echo "<td style='  text-align: center;' ><a  href = 'file/$valore'>link</a> </td>";
-											else if ($k == "File" && $valore == null)
-												echo "<td style='  text-align: center;' ><font  color=\"green\"> - </font></td>";
->>>>>>> origin/master
-											else if($k != "ID")
+											else if($k != "ID" && $k != "Data Ritiro")
 												echo "<td><font color=\"green\">$valore</font></td>";
+											
 										}
 									}
 									else 
@@ -140,20 +135,22 @@ if(!CheckSessionLogin())
 											if ($k == "ID")
 											{
 												$ID = $valore;
-<<<<<<< HEAD
-=======
-												//echo "<td><font color=\"red\">$valore</font></td>";
->>>>>>> origin/master
+
 											}
 											else if ($k == "File" && $valore!=null)
 												echo "<td style='  text-align: center;' ><a href = 'file/$valore'>link</a></td>";
 											else if ($k == "File" && $valore == null)
 												echo "<td style='  text-align: center;' ><font color=\"red\"> - </font></td>";
 											else if ($k == "Eseguito")
-											{
 												echo "<td><input type=\"button\" value=\"Esegui\" onClick=\"ConfermaEsecuzione($ID)\"></td>";
+											else if ($k == "Data Ritiro")
+											{
+												// cambio il formato della data
+												$array = explode("-", $valore);
+												$data = $array[2]."/".$array[1]."/".$array[0];
+												echo "<td><font color=\"red\">$data</font></td>";
 											}
-											else
+											else if($k != "ID" && $k != "Data Ritiro")
 												echo "<td><font color=\"red\">$valore</font></td>";
 										}
 									}

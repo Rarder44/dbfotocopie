@@ -239,6 +239,7 @@ if(isset($_FILES["fileToUpload"]))
 						<form name="prenotazione" method="post">
 						Seleziona classe: 
 							<select name="classe">
+							<option value=""></option>
 							<?php
 								global $link;
 								// query che ricava le classi assegnate all'utente
@@ -248,7 +249,6 @@ if(isset($_FILES["fileToUpload"]))
 									$q = "select classi.ID, CONCAT( classi.`Numero classe`,' ',classi.Sezione, ' ', corsi.Nome,' - ',classi.`Fotocopie rimanenti`) as classe from classi, corsi";
 									$q .= " where classi.Corso = corsi.ID"; 
 									
-								
 									$result=$link->query($q);
 									while($row=$result->fetch_assoc())
 									{
