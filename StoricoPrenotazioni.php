@@ -81,6 +81,20 @@
 												echo "<td style='  text-align: center;'> <a href = 'file/$valore'>link</a> </td>";
 											else if ($k == "File" && $valore == null)
 												echo "<td style='  text-align: center;'>-</td>";
+											else if ($k == "Data Ritiro")
+											{
+												// cambio il formato della data
+												$array = explode("-", $valore);
+												$data = $array[2]."/".$array[1]."/".$array[0];
+												echo "<td>$data</td>";
+											}
+											else if ($k == "DataEsecuzione")
+											{
+												// cambio il formato della data
+												$array = explode("-", $valore);
+												$data = $array[2]."/".$array[1]."/".$array[0];
+												echo "<td>$data</td>";
+											}
 											else
 												echo "<td>$valore</td>";
 										}

@@ -16,26 +16,23 @@ if(!CheckSessionLogin())
 	
 	<script>
 	
-	/*function ConfermaEsecuzione(id)
+	function ConfermaEsecuzione(id)
 	{
 		
 		if (confirm('Sicuro di voler procedere?') == true)
 		{
-			alert(id);
-			alert("Esecuzione Avvenuta!!");*/
 			<?php
-			/*global $link;
-			$update = "UPDATE prenotazioni.Eseguito SET Eseguito='1' AND DataEsecuzione=NOW()  WHERE id=" . id;
+			$ID = id;
+			global $link;
+			$update = "UPDATE prenotazioni.Eseguito SET Eseguito='1' AND DataEsecuzione=NOW()  WHERE ID=" . $ID;
 			
-			if ($conn->query($sql) === true)
-				echo "Record updated successfully";
+			if ($link->query($update) === true)
+				echo "<script type=\"text/javascript\">alert(\"Esecuzione avvenuta !\");</script>";
 			else
-				echo "Error updating record: " . $conn->error;
-				*/
+				echo "<script type=\"text/javascript\">alert(\"Esecuzione non avvenuta !\");</script>";
 			?>
-/*
 		}
-	}*/
+	}
 	
 	</script>
 	</head>
@@ -74,7 +71,7 @@ if(!CheckSessionLogin())
 							//Esecuzione Query
 							
 							$q= "SELECT prenotazioni.ID, CONCAT(utenti.Nome,' ', utenti.Cognome) AS Utente, CONCAT (classi.`Numero classe`, ' ', classi.Sezione, ' ', corsi.nome) 
-							AS Classe, prenotazioni.`Numero fotocopie` as 'Num. copie', (CASE WHEN prenotazioni.Formato = 1 THEN \"A4\" ELSE \"A3\" END) AS 'Form.', 
+							AS Classe,  prenotazioni.`Numero alunni` AS Alunni, prenotazioni.`Numero pagine` AS Pagine,prenotazioni.`Numero fotocopie` as 'Num. copie', (CASE WHEN prenotazioni.Formato = 1 THEN \"A4\" ELSE \"A3\" END) AS 'Form.', 
 							(CASE WHEN prenotazioni.Fogli = 1 THEN \"singoli\" ELSE \"fronte/retro\" END) AS Fogli, prenotazioni.DataRichiesta AS 'Data Ritiro', 
 							prenotazioni.Eseguito, prenotazioni.FileName as 'File'";
 							$q.= " FROM utenti, classi, prenotazioni, corsi";
@@ -107,13 +104,13 @@ if(!CheckSessionLogin())
 										foreach($row as $k=>$valore)
 										{
 											
-											if ($k == "ID")
+											if ($k == "ID") // mi salvo l'ID della prenotazione in modo
 												$ID = $valore;
 											else if ($k == "File" && $valore!=null)
 												echo "<td style='  text-align: center;' ><a  href = 'file/$valore'>link</a> </td>";
 											else if ($k == "File" && $valore == null)
 												echo "<td style='  text-align: center;' ><font  color=\"green\"> - </font></td>";
-											else if ($k == "Eseguito")
+											else if ($k == "Eseguito") // nel campo eseguito creo un bottone che permette di aggiornare il database
 												echo "<td><input type=\"button\" value=\"Esegui\" onClick=\"ConfermaEsecuzione($ID)\"></td>";
 											else if ($k == "Data Ritiro")
 											{
