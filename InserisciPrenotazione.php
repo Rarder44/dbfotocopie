@@ -111,35 +111,15 @@ if(isset($_FILES["fileToUpload"]))
 			
 			
 			$("#SelectClasse").change(function(){
-				caricaAlunni($(this).val());
+				
+				caricaAlunni($('option:selected', this).attr('num-al'));
+				
 			});
 		});
 		
-		function caricaAlunni(id)
+		function caricaAlunni(Num)
 		{
-			if(id=="")
-			{
-				
-			}
-			else
-			{
-				//TODO: CARICAMENTO AJAX DEL NUMERO DEGLI ALUNNI
-				alert(id);
-			}
-				
-			<?php
-			
-			//LA PARTE PHP VA NEL FILE DB_WORKER ( E RICHIAMATA ATTRAVERSO AJAX )
-			/*global $link;
-			
-			$query = "SELECT classi.`Numero alunni` from classi where ID = " . id;
-			
-			$result=$link->query($q);
-			
-			while($row=$result->fetch_assoc())
-				$numAlunni = $row["Numero alunni"];*/
-			?>
-			//document.prenotazione.n_alunni.value= $numAlunni;
+			$("#n_alunni").val(Num);
 		}
 		
 		function Form_CHECK()
@@ -259,33 +239,33 @@ if(isset($_FILES["fileToUpload"]))
 						<form name="prenotazione" method="post">
 						Seleziona classe: 
 							<select name="classe" id="SelectClasse">
-							<option value=""></option>
-							<?php
-								global $link;
-								// query che ricava le classi assegnate all'utente
-								
-								if($_SESSION["privilegio"]==1)
-								{
-									$q = "select classi.ID, CONCAT( classi.`Numero classe`,' ',classi.Sezione, ' ', corsi.Nome,' - ',classi.`Fotocopie rimanenti`) as classe from classi, corsi";
-									$q .= " where classi.Corso = corsi.ID"; 
+								<option num-al="" value=""></option>
+								<?php
+									global $link;
+									// query che ricava le classi assegnate all'utente
 									
-									$result=$link->query($q);
-									while($row=$result->fetch_assoc())
+									if($_SESSION["privilegio"]==1)
 									{
-										echo "<option value='$row[ID]'>$row[classe]</option>";	
+										$q = "select classi.ID, CONCAT( classi.`Numero classe`,' ',classi.Sezione, ' ', corsi.Nome,' - ',classi.`Fotocopie rimanenti`) as classe,classi.`Numero alunni` as NumAl from classi, corsi";
+										$q .= " where classi.Corso = corsi.ID"; 
+										
+										$result=$link->query($q);
+										while($row=$result->fetch_assoc())
+										{
+											echo "<option num-al=$row[NumAl]  value='$row[ID]'>$row[classe]</option>";	
+										}
 									}
-								}
-								else
-								{
-									$q = "select classi.ID, CONCAT( classi.`Numero classe`,' ',classi.Sezione, ' ',corsi.Nome,' - ',classi.`Fotocopie rimanenti`) as classe from utenti, classi, insegna, corsi where utenti.ID = insegna.ID_Utente and insegna.ID_Classe = classi.ID  and classi.Corso = corsi.ID and utenti.`Username` = 'docente_1'";
-									
-									$result=$link->query($q);
-									while($row=$result->fetch_assoc())
+									else
 									{
-										echo "<option value='$row[ID]'>$row[classe]</option>";	
+										$q = "select classi.ID, CONCAT( classi.`Numero classe`,' ',classi.Sezione, ' ',corsi.Nome,' - ',classi.`Fotocopie rimanenti`) as classe from utenti, classi, insegna, corsi where utenti.ID = insegna.ID_Utente and insegna.ID_Classe = classi.ID  and classi.Corso = corsi.ID and utenti.`Username` = 'docente_1'";
+										
+										$result=$link->query($q);
+										while($row=$result->fetch_assoc())
+										{
+											echo "<option value='$row[ID]'>$row[classe]</option>";	
+										}
 									}
-								}
-							?>	
+								?>	
 							</select>
 							
 							

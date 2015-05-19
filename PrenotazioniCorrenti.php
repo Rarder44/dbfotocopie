@@ -21,16 +21,19 @@ if(!CheckSessionLogin())
 		
 		if (confirm('Sicuro di voler procedere?') == true)
 		{
-			<?php
-			$ID = id;
-			global $link;
-			$update = "UPDATE prenotazioni.Eseguito SET Eseguito='1' AND DataEsecuzione=NOW()  WHERE ID=" . $ID;
-			
-			if ($link->query($update) === true)
-				echo "<script type=\"text/javascript\">alert(\"Esecuzione avvenuta !\");</script>";
-			else
-				echo "<script type=\"text/javascript\">alert(\"Esecuzione non avvenuta !\");</script>";
-			?>
+			$.post("include/db_worker.php",{ConfermaEsecuzione:1,id:id},function(data){
+				var arr=JSONfn.parse(data);
+				if(arr["err"]==1)
+				{
+					alert(arr["mess"]);
+				}
+				else
+				{
+					location.reload();
+				}
+			});
+		
+		
 		}
 	}
 	

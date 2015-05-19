@@ -17,10 +17,11 @@
 	
 	//Amministratore
 	$menuSide["Loggato"]["1"]="";
-	$menuSide["Loggato"]["1"].="<a href='InserisciPrenotazione.php' class='bottoneSidebar'>Inserisci Prenotazione</a>";
 	$menuSide["Loggato"]["1"].="<a href='ModificaUtenti.php' class='bottoneSidebar'>Utenti</a>";	
-	$menuSide["Loggato"]["1"].="<a href='StoricoPrenotazioni.php' class='bottoneSidebar'>Visualizza Storico Prenotazioni</a>";
+	$menuSide["Loggato"]["1"].="<a href='InserisciPrenotazione.php' class='bottoneSidebar'>Inserisci Prenotazione</a>";
 	$menuSide["Loggato"]["1"].="<a href='PrenotazioniCorrenti.php' class='bottoneSidebar'>Visualizza Prenotazioni Correnti</a>";
+	$menuSide["Loggato"]["1"].="<a href='StoricoPrenotazioni.php' class='bottoneSidebar'>Visualizza Storico Prenotazioni</a>";
+	
 	
 	//Utenti
 	$menuSide["Loggato"]["2"]="";
@@ -30,9 +31,8 @@
 	
 	//Segreteria
 	$menuSide["Loggato"]["3"]="";	
-	$menuSide["Loggato"]["3"].="<a href='StoricoPrenotazioni.php' class='bottoneSidebar'>Visualizza Storico Prenotazioni</a>";
 	$menuSide["Loggato"]["3"].="<a href='PrenotazioniCorrenti.php' class='bottoneSidebar'>Visualizza Prenotazioni Correnti</a>";
-	
+	$menuSide["Loggato"]["3"].="<a href='StoricoPrenotazioni.php' class='bottoneSidebar'>Visualizza Storico Prenotazioni</a>";
 	
 	/*
 	$menuSide["Loggato"]["3"]="";
