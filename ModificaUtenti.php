@@ -23,12 +23,15 @@ if(!CheckSessionLogin())
 
 		$("#dati_classe_Nalunni, #dati_classe_fotocopie, #dati_classe_numero").keypress( function(e) { return (e.charCode<48 || e.charCode>57)?false:true;});
 		
+		//caricamento select - option 
 		LoadPrivilegiUtenti();
 		LoadCorsiClassi();
 		LoadClassiAssociazioni();
+		
+		//caricamento Utenti - Classi
 		LoadListaUtenti();
 		LoadListaClassi();
-
+		LoadListaUtentiAssociazioni();
 		
 		//Eventi Bottoni Utenti
 		$("#ButtonUtentiShowDivHidden").click(function(){
@@ -90,6 +93,21 @@ if(!CheckSessionLogin())
 			CancelEditClasse();
 			LoadListaClassiCerca($("#cerca_Classi_combo_corso").val());
 		});
+		
+		$("#ButtonAddAssociazione").click(function(){		
+			AddAssociazione($("div#cont_relazioni_classi").attr("id-ut"),$("#classi_associazioni").val());
+		});
+		
+		$("#ButtonRemoveAssociazione").click(function(){	
+				
+			if($("#cont_relazioni_Classi table .selected").length==1)
+				RemoveAssociazione($("div#cont_relazioni_classi").attr("id-ut"),$("#cont_relazioni_Classi table .selected").attr("id-cl"));
+			else
+				alert("selezionare una classe");
+			
+			
+		});
+		
 	});
 	
 	function LoadPrivilegiUtenti()
@@ -587,19 +605,94 @@ if(!CheckSessionLogin())
 	//Funzioni Associazioni
 	function LoadListaUtentiAssociazioni()
 	{
-		
+		$.post("include/db_worker.php",{LoadListaUtenti:1},function(data){
+			var arr=JSONfn.parse(data);
+			if(arr["err"]==1)
+			{
+				alert(arr["mess"]);
+			}
+			else
+			{
+				$("#cont_relazioni_utenti table").html("");
+				$.each(arr["dato"], function( index, value ) {
+					var v1=document.createElement('tr');
+					$(v1).attr("id-ut",value["ID"]);
+					var v2=document.createElement('td');
+					$(v2).append(value["Cognome"]);
+					var v3=document.createElement('td');
+					$(v3).append(value["Nome"]);
+					$(v1).append(v2);
+					$(v1).append(v3);
+					$(v1).click(function()
+					{
+						CancelEditAssociazione();
+						$("#ButtonAddAssociazione").removeAttr('disabled');
+						UnselectAllUtentiAssociazioni();
+						$(this).addClass("selected");
+						LoadListaClassiAssociazioni($(this).attr("id-ut"));
+					});
+					
+					$("#cont_relazioni_utenti table").append(v1);
+				});
+				
+			}
+		});
 	}
+	function CancelEditAssociazione()
+	{
+		$("#ButtonAddAssociazione").attr('disabled','disabled');
+		$("#ButtonRemoveAssociazione").attr('disabled','disabled');
+	}
+	function UnselectAllUtentiAssociazioni()
+	{
+		$("#cont_relazioni_utenti table .selected").removeClass("selected");
+	}
+	function UnselectAllClassiAssociazioni()
+	{
+		$("#cont_relazioni_Classi table .selected").removeClass("selected");
+	}
+
+	
 	function LoadListaClassiAssociazioni(IDUtente)
 	{
-		
+		$.post("include/db_worker.php",{LoadListaClassiAssociazioni:1,IDUtente:IDUtente},function(data){
+			var arr=JSONfn.parse(data);
+			if(arr["err"]==1)
+			{
+				alert(arr["mess"]);
+			}
+			else
+			{
+				$("div#cont_relazioni_classi").attr("id-ut",IDUtente);
+				$("#cont_relazioni_classi table").html("");
+				$.each(arr["dato"], function( index, value ) {
+					var v1=document.createElement('tr');
+					$(v1).attr("id-cl",value["ID"]);
+					var v2=document.createElement('td');
+					$(v2).append(value["Nome"]);
+					$(v1).append(v2);
+					$(v1).click(function()
+					{
+						UnselectAllClassiAssociazioni();
+						$("#ButtonRemoveAssociazione").removeAttr('disabled');
+						$(this).addClass("selected");
+					});
+					
+					$("#cont_relazioni_classi table").append(v1);
+				});
+				
+			}
+		});
 	}
 	function AddAssociazione(IDUtente,IDClasse)
 	{
-		
+		alert(IDUtente+" "+IDClasse);
+		LoadListaClassiAssociazioni($("div#cont_relazioni_classi").attr("id-ut"));
 	}
 	function RemoveAssociazione(IDUtente,IDClasse)
 	{
-		
+		alert(IDUtente+" "+IDClasse);
+		LoadListaClassiAssociazioni($("div#cont_relazioni_classi").attr("id-ut"));
 	}
 	
 </script>
@@ -657,26 +750,28 @@ if(!CheckSessionLogin())
 }
 
 
-#Lista_Utenti table tr,#Lista_Classi table tr
+#Lista_Utenti table tr,#Lista_Classi table tr,#cont_relazioni_utenti table tr,#cont_relazioni_Classi table tr
 {
 	cursor:pointer;
 }
-#Lista_Utenti table tr.selected,#Lista_Classi table tr.selected
+#Lista_Utenti table tr.selected,#Lista_Classi table tr.selected,#cont_relazioni_utenti table tr.selected,#cont_relazioni_Classi table tr.selected
 {
 	  background: rgb(255, 178, 178);
 }
-
-
-#Lista_Utenti table tr:hover,#Lista_Classi table tr:hover
+#Lista_Utenti table tr:hover,#Lista_Classi table tr:hover,#cont_relazioni_utenti table tr:hover,#cont_relazioni_Classi table tr:hover
 {
 	    background: rgb(255, 218, 218);
 }
+
 
 
 #dati_utenti_Password.verde
 {
 	  background: rgb(148, 253, 148);
 }	
+
+
+
 </style>
 	<body>
 		<div class="box">
@@ -955,7 +1050,9 @@ if(!CheckSessionLogin())
 												<tr>
 													<td style="vertical-align: top;  width: 200px;">
 														<div id="cont_relazioni_utenti">
+															<table>
 															
+															</table>
 														</div>
 													</td>
 													<td>
@@ -963,7 +1060,9 @@ if(!CheckSessionLogin())
 													</td>
 													<td style="vertical-align: top;   width: 200px;">
 														<div id="cont_relazioni_Classi">
-													
+															<table>
+															
+															</table>
 														</div>
 														<br>
 														
@@ -971,7 +1070,7 @@ if(!CheckSessionLogin())
 															<select id="classi_associazioni">
 																
 															</select>
-															<button id="ButtonAddAssociazione">+</button>					
+															<button id="ButtonAddAssociazione" disabled="disabled">+</button>					
 														</div>
 														<button id="ButtonRemoveAssociazione" disabled="disabled">-</button>
 													</td>

@@ -821,6 +821,50 @@
 			
 	}
 	
+	else if(isset($_POST["LoadListaClassiAssociazioni"]) && isset($_POST["IDUtente"]))
+	{
+		if(CheckSessionLogin())
+		{
+			if(isset($_SESSION["privilegio"])  && isset($_SESSION["user"])  )
+			{
+				$priv=$_SESSION["privilegio"];
+				$user=$_SESSION["user"];
+				
+				
+				//superadmin -> ottiene tutti gli utenti
+				if($priv==1)
+				{
+				
+						
+					$q="SELECT classi.ID,CONCAT(`Numero classe`,Sezione,' ',corsi.nome) as Nome from classi inner JOIN insegna on (insegna.ID_Classe=classi.ID) INNER JOIN utenti on (utenti.ID=insegna.ID_Utente) INNER JOIN corsi on ( corsi.ID=Corso) where ID_Utente =$_POST[IDUtente] ORDER BY Corso,Sezione,`Numero classe`";
+					$arr=array();
+					
+					$r=$link->query($q);
+					if (!$r) {
+						$message  = 'Errore query: ' . $link->error . "<br>";
+						$message .= 'Whole query: ' . $q;
+						SendError($message );
+					}
+					else
+					{
+						while($row=$r->fetch_assoc())
+						{
+							$arr[]=$row;
+						}
+						SendDato($arr);
+					}
+				}
+				else
+					SendError("Autorizzazioni insufficenti");
+			}
+			else
+				SendError("Errore nel recupero del privilegio/user");
+		}
+		else
+			SendError("Autorizzazioni insufficenti");
+			
+	}
+	
 	
 	
 	
