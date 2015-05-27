@@ -686,13 +686,39 @@ if(!CheckSessionLogin())
 	}
 	function AddAssociazione(IDUtente,IDClasse)
 	{
-		alert(IDUtente+" "+IDClasse);
-		LoadListaClassiAssociazioni($("div#cont_relazioni_classi").attr("id-ut"));
+		//alert(IDUtente+" "+IDClasse);
+		
+		$.post("include/db_worker.php",{AddAssociazione:1,IDUtente:IDUtente,IDClasse:IDClasse},function(data){
+			var arr=JSONfn.parse(data);
+			if(arr["err"]==1)
+			{
+				alert(arr["mess"]);
+			}
+			else
+			{
+				LoadListaClassiAssociazioni($("div#cont_relazioni_classi").attr("id-ut"));
+			}
+		});
+		
 	}
 	function RemoveAssociazione(IDUtente,IDClasse)
 	{
-		alert(IDUtente+" "+IDClasse);
-		LoadListaClassiAssociazioni($("div#cont_relazioni_classi").attr("id-ut"));
+		//alert(IDUtente+" "+IDClasse);
+		
+		$.post("include/db_worker.php",{RemoveAssociazione:1,IDUtente:IDUtente,IDClasse:IDClasse},function(data){
+			var arr=JSONfn.parse(data);
+			if(arr["err"]==1)
+			{
+				alert(arr["mess"]);
+			}
+			else
+			{
+				LoadListaClassiAssociazioni($("div#cont_relazioni_classi").attr("id-ut"));
+			}
+		});
+		
+		
+		
 	}
 	
 </script>

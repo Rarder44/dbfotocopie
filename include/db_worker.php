@@ -865,12 +865,109 @@
 			
 	}
 	
+
 	
+	else if(isset($_POST["RemoveAssociazione"]) && isset($_POST["IDUtente"]) && isset($_POST["IDClasse"]))
+	{
+		if(CheckSessionLogin())
+		{
+			if(isset($_SESSION["privilegio"])  && isset($_SESSION["user"])  )
+			{
+				$priv=$_SESSION["privilegio"];
+				$user=$_SESSION["user"];
+				
+				
+				//superadmin -> ottiene tutti gli utenti
+				if($priv==1)
+				{
+					$q="delete from insegna where ID_Utente=$_POST[IDUtente] and ID_Classe=$_POST[IDClasse]";
+					$arr=array();
+					
+					$r=$link->query($q);
+					if (!$r) {
+						$message  = 'Errore query: ' . $link->error . "<br>";
+						$message .= 'Whole query: ' . $q;
+						SendError($message );
+					}
+					else
+					{
+						SendDato(null,"Associazione eliminata correttamente");
+					}
+				}
+				else
+					SendError("Autorizzazioni insufficenti");
+			}
+			else
+				SendError("Errore nel recupero del privilegio/user");
+		}
+		else
+			SendError("Autorizzazioni insufficenti");
+			
+	}
 	
-	
-	
-	
-	
+		else if(isset($_POST["AddAssociazione"])&& isset($_POST["IDUtente"]) && isset($_POST["IDClasse"]))
+	{
+		if(CheckSessionLogin())
+		{
+			if(isset($_SESSION["privilegio"])  && isset($_SESSION["user"])  )
+			{
+				$priv=$_SESSION["privilegio"];
+				$user=$_SESSION["user"];
+				
+				
+				//superadmin -> ottiene tutti gli utenti
+				if($priv==1)
+				{
+					$q="SELECT count(ID)as c from insegna where ID_Utente=$_POST[IDUtente] and ID_Classe='$_POST[IDClasse]'";
+					
+					
+					$r=$link->query($q);
+					if (!$r) {
+						$message  = 'Errore query: ' . $link->error . "<br>";
+						$message .= 'Whole query: ' . $q;
+						SendError($message );
+					}
+					else
+					{
+						
+						if($row=$r->fetch_assoc())
+						{
+							if($row["c"]>0)
+								SendError("La coppia Utente-Classe è gia prensente nel database");
+							
+							else
+							{
+								$q="INSERT into insegna (ID_Utente,ID_Classe) VALUES($_POST[IDUtente],$_POST[IDClasse])";
+								$arr=array();
+								
+								$r=$link->query($q);
+								if (!$r) {
+									$message  = 'Errore query: ' . $link->error . "<br>";
+									$message .= 'Whole query: ' . $q;
+									SendError($message );
+								}
+								else
+								{
+									SendDato(null,"Associazione aggiunta correttamente");
+								}
+							}
+						}
+						else
+							SendError("Errore nel recupero degli Utenti");
+
+					}
+
+				}
+				else
+					SendError("Autorizzazioni insufficenti");
+			}
+			else
+				SendError("Errore nel recupero del privilegio/user");
+		}
+		else
+			SendError("Autorizzazioni insufficenti");
+			
+	}
 	
 	
 	
